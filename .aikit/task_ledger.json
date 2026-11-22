@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-reforge-run-1",
+    "task_id": "sextant-reforge-state",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795337541.506384,
+    "updated_at": 1795337573.918511,
     "owner": "opencode:sextant",
-    "lease_until": 1795344741.506384,
+    "lease_until": 1795344773.918511,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -17,35 +17,11 @@
       }
     ],
     "completed_without_impact_assessment": true,
-    "completed_at": 1795337542.1926694,
-    "completed_head": "354124a66f111e0af2f4dd20b5ebf9a48d30d494",
-    "completed_tree": "a3c215404dd714239cd09774067da73fb4c3c2a5"
+    "completed_at": 1795337574.3633974,
+    "completed_head": "97de107eabfeedff2d903c7fa09b87e047286893",
+    "completed_tree": "eb7877b0e216ebee01ba93812690b65bfd37d6a2"
   },
   "checkpoints": [
-    {
-      "task_id": "reforge:run-1",
-      "phase": "reforge stage 3",
-      "phase_num": 3,
-      "description": "Reforge stage 3: stage 3 host review reviewed; run active; coverage 33/33",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795336009.2900188,
-      "timestamp_str": "2026-11-22 11:26:49",
-      "agent": "opencode",
-      "operator_task": "sextant-v010-doc-fix"
-    },
-    {
-      "task_id": "reforge:run-1",
-      "phase": "reforge stage 4",
-      "phase_num": 3,
-      "description": "Reforge stage 4: window 11, 3 commit(s), 12 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795336034.5886111,
-      "timestamp_str": "2026-11-22 11:27:14",
-      "agent": "opencode",
-      "operator_task": "sextant-v010-doc-fix"
-    },
     {
       "task_id": "reforge:run-1",
       "phase": "reforge stage 4",
@@ -266,6 +242,41 @@
       "timestamp_str": "2026-11-22 11:52:22",
       "agent": "opencode:sextant",
       "head": "354124a66f111e0af2f4dd20b5ebf9a48d30d494",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-reforge-state",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Commit reforge run state and ledger after completion",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337573.918511,
+      "timestamp_str": "2026-11-22 11:52:53",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-reforge-state",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-reforge-state' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795337574.4268725,
+      "timestamp_str": "2026-11-22 11:52:54",
+      "agent": "opencode:sextant",
+      "head": "97de107eabfeedff2d903c7fa09b87e047286893",
       "delivery": {
         "roots": [
           "."
