@@ -26,7 +26,9 @@
   "created": "2026-11-22",
   "has_ui": false,
   "ui_kind": "library",
-  "ui_evidence": [],
+  "ui_evidence": [
+    "docs/manual.html"
+  ],
   "ui_checked_at": "2026-11-22",
-  "ui_source": "detected"
+  "ui_source": "manual"
 }
