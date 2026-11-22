@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-ui-evidence",
+    "task_id": "sextant-v05-json",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795313520.0875382,
+    "updated_at": 1795313962.8321383,
     "owner": "opencode:sextant",
-    "lease_until": 1795320720.0875382,
+    "lease_until": 1795321162.8321383,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,122 +16,11 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_without_impact_assessment": true,
-    "completed_at": 1795313521.0592806,
-    "completed_head": "ec55040f9bd22da6f0bcc32b40e640718c2d5ec2",
-    "completed_tree": "320948f61f5adb740175078aea43c936b43e572d"
+    "completed_at": 1795313963.289323,
+    "completed_head": "73aa891e78b78fa9b5ce6ee40980f9cb1be16cda",
+    "completed_tree": "c2a287e86eeb7c79d8d09b9a82f768ba1dbbff37"
   },
   "checkpoints": [
-    {
-      "task_id": "sextant-v02-observability",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/5] Add pure core modules for coverage analysis, 1-minimal reduction with an explicit MinimizerState machine, and DOT/Mermaid graph export",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312223.2903326,
-      "timestamp_str": "2026-11-22 04:50:23",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v02-observability",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/5] Wire coverage, minimize and graph into the CLI shell with pipe-safe stdout and versioned reports",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312229.8924778,
-      "timestamp_str": "2026-11-22 04:50:29",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v02-observability",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/5] Add examples, feature tests, README tree entries, AUDIT/ARCHITECTURE updates and ADR-002",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312235.560333,
-      "timestamp_str": "2026-11-22 04:50:35",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v02-observability",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 34 Rust tests green and all five project gates passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312242.717959,
-      "timestamp_str": "2026-11-22 04:50:42",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v02-observability",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v02-observability' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795312250.1936195,
-      "timestamp_str": "2026-11-22 04:50:50",
-      "agent": "opencode:sextant",
-      "head": "80e878b71c803bd3582e86d44bbd14bc8ca1c5a8",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
-    {
-      "task_id": "sextant-v03-properties",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.3: behavioural properties (reaches/avoids/emits) and bounded state-label-independent equivalence",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312837.117138,
-      "timestamp_str": "2026-11-22 05:00:37",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "Programmers need to assert reachability and event emission, and to prove a state-machine refactor preserved behaviour without being defeated by renamed states.",
-        "benefits": "Properties become executable documentation; equiv gives a mechanical regression check for refactors and ports.",
-        "risks": "contract: violation shape changes and output needs a version header; dependency: std only; concurrency: none; state: equivalence must be bounded and deterministic.",
-        "mitigation": "Versioned reports, RuleType to distinguish invariant from property violations, exhaustive tests over the exploration space and deterministic sequence enumeration with a cap."
-      },
-      "plan_digest": "4314b11c8508ee8837ec85898b5e54061f8206c2e491ec182fd88e752bc37320",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
     {
       "task_id": "sextant-v03-properties",
       "phase": "phase 3",
@@ -367,6 +256,116 @@
       "timestamp_str": "2026-11-22 05:12:01",
       "agent": "opencode:sextant",
       "head": "ec55040f9bd22da6f0bcc32b40e640718c2d5ec2",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v05-json",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan v0.5: a std-only deterministic JSON serializer and --json output for check, explore and fuzz",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795313574.2160046,
+      "timestamp_str": "2026-11-22 05:12:54",
+      "agent": "opencode:sextant",
+      "impact_assessment": {
+        "why": "CI needs stable machine-readable verdicts; a JSON renderer is a pure function of core results and fits the existing boundary.",
+        "benefits": "Pipelines can consume findings and failure counts without parsing prose; zero dependencies are preserved.",
+        "risks": "contract: JSON keys become a public interface; dependency: none; concurrency: none; state: serializer must be total and deterministic.",
+        "mitigation": "Fixed key order, explicit escaping, golden-style byte tests for both empty and populated results, and documentation of the key schema."
+      },
+      "plan_digest": "8074305a27cb1e8bb38006c1324d1976ccf16866b96b8debabb981cd26e3133c",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v05-json",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/5] Add a pure std-only JSON value type and serializer with exact escaping and fixed key order",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795313961.4597888,
+      "timestamp_str": "2026-11-22 05:19:21",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v05-json",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/5] Add --json to check, explore and fuzz with pipe-safe stdout and stderr status",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795313961.9266832,
+      "timestamp_str": "2026-11-22 05:19:21",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v05-json",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/5] Add JSON tests, ADR-005 and README/DSL/AUDIT documentation of the stable key schema",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795313962.3714871,
+      "timestamp_str": "2026-11-22 05:19:22",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v05-json",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[5/5] Phase 4 passed: 53 Rust tests green and all five project gates passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795313962.8321383,
+      "timestamp_str": "2026-11-22 05:19:22",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v05-json",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v05-json' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795313963.351271,
+      "timestamp_str": "2026-11-22 05:19:23",
+      "agent": "opencode:sextant",
+      "head": "73aa891e78b78fa9b5ce6ee40980f9cb1be16cda",
       "delivery": {
         "roots": [
           "."
