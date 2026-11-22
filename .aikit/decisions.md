@@ -67,3 +67,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: A golden trace records what happened, but turning it back into an event script or a reduced model still requires manual transcription. Both are pure transformations of data Sextant already produces.
 - **Decision**: Add untrace to recover the event script from a versioned trace, and slice to project a machine down to the transitions actually exercised by a script, dropping unused states/events and properties whose symbols disappear. Both render through existing pure functions.
 - **Consequences**: Two new core modules and CLI commands; the sliced machine is canonical and remains replayable with the same script. Dropped properties are reported explicitly so a user never assumes a removed rule was preserved.
+
+### ADR-009: ADR-009: Explicit terminal states
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: Dead-end detection is useful but v0.8 slices always end in a state, which check wrongly treats as a modeling mistake and which makes replay refuse a valid slice.
+- **Decision**: Add a terminal state declaration; verify skips the dead-end finding only for declared terminals, slice marks the script final state as terminal, and canonical rendering plus structural diff include terminals.
+- **Consequences**: Modelers state intent explicitly while dead-end detection keeps its power for undeclared sinks, and sliced machines replay through the CLI without a bypass flag.

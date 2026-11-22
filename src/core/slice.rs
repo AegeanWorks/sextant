@@ -51,6 +51,14 @@ pub fn slice(machine: &Machine, trace: &Trace) -> SliceResult {
     }
 
     dropped_properties.sort();
+    // The script stops in this state, so declaring it terminal keeps the slice
+    // verifiable without weakening dead-end detection for undeclared sinks.
+    let mut terminals = machine.terminals.clone();
+    if !terminals.contains(&trace.final_state) {
+        terminals.push(trace.final_state.clone());
+    }
+    terminals.sort();
+
     let removed_states = machine.declared_states.len().saturating_sub(states.len());
     let removed_events = machine.declared_events.len().saturating_sub(events.len());
     let removed_transitions = machine.transitions.len().saturating_sub(transitions.len());
@@ -58,6 +66,7 @@ pub fn slice(machine: &Machine, trace: &Trace) -> SliceResult {
         name: format!("{}_slice", machine.name),
         initial: machine.initial.clone(),
         declared_states: states.into_iter().collect(),
+        terminals,
         declared_events: events.into_iter().collect(),
         transitions,
         invariants: machine.invariants.clone(),

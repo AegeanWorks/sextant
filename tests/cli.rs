@@ -424,9 +424,13 @@ fn slice_emits_a_smaller_replayable_machine() {
         stdout.lines().filter(|line| line.starts_with("transition ")).count(),
         3
     );
-    // The slice ends in a terminal state with no outgoing edge, which `check`
-    // correctly reports as a dead end. It is a debugging projection, not a
-    // standalone verified model; replay equivalence is covered in tests/slice.rs.
+    assert!(stdout.contains("terminal done"));
+    let sliced = fixture.write("sliced.sex", &stdout);
+    let check = run(&["check", as_text(&sliced)]);
+    assert_eq!(check.0, 0, "stderr: {}", check.2);
+    let replayed = run(&["replay", as_text(&sliced), as_text(&events)]);
+    assert_eq!(replayed.0, 0, "stderr: {}", replayed.2);
+    assert!(replayed.1.contains("step 004: OK | waiting {tries=2} -> done {tries=2}"));
 }
 
 #[test]

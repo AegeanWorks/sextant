@@ -182,6 +182,14 @@ pub fn verify(machine: &Machine) -> Vec<Finding> {
     if !machine.has_state(&machine.initial) {
         findings.push(Finding::UnknownInitial(machine.initial.0.clone()));
     }
+    for state in &machine.terminals {
+        if !machine.has_state(state) {
+            findings.push(Finding::UndeclaredState {
+                state: state.0.clone(),
+                context: "terminal declaration".to_string(),
+            });
+        }
+    }
 
     for (offset, transition) in machine.transitions.iter().enumerate() {
         let context = format!("transition {}", offset + 1);
@@ -288,7 +296,9 @@ pub fn verify(machine: &Machine) -> Vec<Finding> {
         if !reachable.contains(state) {
             findings.push(Finding::UnreachableState(state.0.clone()));
         }
-        if !machine.transitions.iter().any(|item| &item.from == state) {
+        if !machine.transitions.iter().any(|item| &item.from == state)
+            && !machine.terminals.contains(state)
+        {
             findings.push(Finding::DeadEndState(state.0.clone()));
         }
     }

@@ -172,6 +172,7 @@ pub struct Machine {
     pub name: String,
     pub initial: State,
     pub declared_states: Vec<State>,
+    pub terminals: Vec<State>,
     pub declared_events: Vec<Event>,
     pub transitions: Vec<Transition>,
     pub invariants: Vec<Invariant>,

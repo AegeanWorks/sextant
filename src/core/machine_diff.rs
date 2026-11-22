@@ -15,6 +15,8 @@ pub struct MachineDiff {
     pub initial_changed: Option<(String, String)>,
     pub states_added: Vec<String>,
     pub states_removed: Vec<String>,
+    pub terminals_added: Vec<String>,
+    pub terminals_removed: Vec<String>,
     pub events_added: Vec<String>,
     pub events_removed: Vec<String>,
     pub transitions_added: Vec<String>,
@@ -29,6 +31,7 @@ impl MachineDiff {
     pub fn total_changes(&self) -> usize {
         let mut total = usize::from(self.initial_changed.is_some());
         total += self.states_added.len() + self.states_removed.len();
+        total += self.terminals_added.len() + self.terminals_removed.len();
         total += self.events_added.len() + self.events_removed.len();
         total += self.transitions_added.len() + self.transitions_removed.len();
         total += self.invariants_added.len() + self.invariants_removed.len();
@@ -51,6 +54,10 @@ pub fn diff(left: &Machine, right: &Machine) -> MachineDiff {
     let (states_added, states_removed) = changes(
         set(left.declared_states.iter().map(|item| item.0.clone())),
         set(right.declared_states.iter().map(|item| item.0.clone())),
+    );
+    let (terminals_added, terminals_removed) = changes(
+        set(left.terminals.iter().map(|item| item.0.clone())),
+        set(right.terminals.iter().map(|item| item.0.clone())),
     );
     let (events_added, events_removed) = changes(
         set(left.declared_events.iter().map(|item| item.0.clone())),
@@ -88,6 +95,8 @@ pub fn diff(left: &Machine, right: &Machine) -> MachineDiff {
         initial_changed,
         states_added,
         states_removed,
+        terminals_added,
+        terminals_removed,
         events_added,
         events_removed,
         transitions_added,
@@ -123,6 +132,12 @@ pub fn render_diff(report: &MachineDiff) -> String {
         lines.push(format!("initial: {} -> {}", old, new));
     }
     section(&mut lines, "states", &report.states_added, &report.states_removed);
+    section(
+        &mut lines,
+        "terminals",
+        &report.terminals_added,
+        &report.terminals_removed,
+    );
     section(&mut lines, "events", &report.events_added, &report.events_removed);
     section(
         &mut lines,
@@ -166,6 +181,8 @@ pub fn diff_json(report: &MachineDiff) -> Json {
         ("initial", initial),
         ("states_added", names(&report.states_added)),
         ("states_removed", names(&report.states_removed)),
+        ("terminals_added", names(&report.terminals_added)),
+        ("terminals_removed", names(&report.terminals_removed)),
         ("events_added", names(&report.events_added)),
         ("events_removed", names(&report.events_removed)),
         ("transitions_added", names(&report.transitions_added)),

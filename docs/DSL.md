@@ -13,6 +13,7 @@ machine reviewable in a diff and its parser easy to audit.
 | `machine <name>` | Exactly one machine name. Required. |
 | `initial <state>` | Exactly one initial state. Required. Must be declared. |
 | `state <name>` | Declare a state. Duplicates are rejected. |
+| `terminal <state>` | Declare an intentional end state; it is exempt from the dead-end finding and must be declared as a state. |
 | `event <name>` | Declare an event. Duplicates are rejected. |
 | `invariant <name>: <condition>` | A condition that must hold initially and after every step. |
 
@@ -185,10 +186,9 @@ only the transitions that were exercised, plus the states and events they mentio
 Properties whose symbols disappear are dropped and listed in a `# sextant-slice v1`
 summary on stderr. The result replays the same script with the same steps and environment.
 
-A slice is a **debugging projection**, not a standalone verified model: its final state
-often has no outgoing edge, so `check` correctly reports a dead end and `replay` (which
-verifies first) will refuse it. Use the slice to inspect a failing path, not as a
-replacement for the original model.
+A slice declares its final state `terminal`, so it verifies cleanly and can be replayed
+through every CLI command. It is still a projection for debugging a specific path: other
+transitions of the original model are intentionally absent.
 
 ## Canonical form and diff
 

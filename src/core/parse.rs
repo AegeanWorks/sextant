@@ -102,6 +102,7 @@ pub fn parse_machine(input: &str) -> Result<Machine, Error> {
     let mut name: Option<String> = None;
     let mut initial: Option<State> = None;
     let mut declared_states: Vec<State> = Vec::new();
+    let mut terminals: Vec<State> = Vec::new();
     let mut declared_events: Vec<Event> = Vec::new();
     let mut transitions: Vec<Transition> = Vec::new();
     let mut invariants: Vec<Invariant> = Vec::new();
@@ -160,6 +161,22 @@ pub fn parse_machine(input: &str) -> Result<Machine, Error> {
                     });
                 }
                 declared_states.push(state);
+            }
+            "terminal" => {
+                if tokens.len() != 2 {
+                    return Err(Error::Parse {
+                        line: line_no,
+                        message: "'terminal' needs exactly one state".to_string(),
+                    });
+                }
+                let state = State(tokens[1].to_string());
+                if terminals.contains(&state) {
+                    return Err(Error::Duplicate {
+                        what: "terminal",
+                        name: state.0,
+                    });
+                }
+                terminals.push(state);
             }
             "event" => {
                 if tokens.len() != 2 {
@@ -298,6 +315,7 @@ pub fn parse_machine(input: &str) -> Result<Machine, Error> {
         name: name.ok_or(Error::MissingMachineName)?,
         initial: initial.ok_or(Error::MissingInitial)?,
         declared_states,
+        terminals,
         declared_events,
         transitions,
         invariants,

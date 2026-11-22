@@ -41,6 +41,12 @@ pub fn render_machine(machine: &Machine) -> String {
         .map(|state| format!("state {}", state.as_str()))
         .collect();
     states.sort();
+    let mut terminals: Vec<String> = machine
+        .terminals
+        .iter()
+        .map(|state| format!("terminal {}", state.as_str()))
+        .collect();
+    terminals.sort();
     let mut events: Vec<String> = machine
         .declared_events
         .iter()
@@ -67,6 +73,7 @@ pub fn render_machine(machine: &Machine) -> String {
         format!("initial {}", machine.initial.as_str()),
     ];
     sections.extend(states);
+    sections.extend(terminals);
     sections.extend(events);
     sections.extend(transitions);
     sections.extend(invariants);

@@ -52,6 +52,24 @@ fn verification_finds_unreachable_and_dead_end_states() {
 }
 
 #[test]
+fn declared_terminals_are_not_dead_ends() {
+    let base = "machine end\ninitial idle\nstate idle\nstate done\nevent GO\ntransition idle GO -> done\n";
+    let without = parse_machine(base).unwrap();
+    assert!(verify(&without)
+        .iter()
+        .any(|finding| matches!(finding, sextant::core::Finding::DeadEndState(_))));
+
+    let with = parse_machine(&format!("{}terminal done\n", base)).unwrap();
+    assert!(verify(&with).is_empty());
+    assert_eq!(with.terminals, vec![State("done".to_string())]);
+
+    let bad = parse_machine(&format!("{}terminal ghost\n", base)).unwrap();
+    assert!(verify(&bad)
+        .iter()
+        .any(|finding| finding.message().contains("undeclared state 'ghost'")));
+}
+
+#[test]
 fn verification_finds_identically_guarded_transitions() {
     let text = "machine dup\ninitial idle\nstate idle\nstate done\nevent GO\ntransition idle GO -> done\ntransition idle GO when tries == 0 -> done\ntransition idle GO when tries == 0 do tries += 1 -> done\n";
     let parsed = parse_machine(text).unwrap();

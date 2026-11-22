@@ -2,7 +2,6 @@
 
 use sextant::core::{
     parse_events, parse_machine, render_events, render_trace, replay, slice, untrace, verify,
-    Finding,
 };
 
 const RETRY: &str = include_str!("../examples/retry.sex");
@@ -37,11 +36,9 @@ fn sliced_machine_replays_the_same_script() {
     assert_eq!(report.removed_events, 1);
     assert_eq!(report.removed_states, 0);
     assert!(report.dropped_properties.is_empty());
-    // The final state has no outgoing edge because the unused RESET transition was
-    // removed. A dead-end finding is therefore expected for a slice, not a defect.
-    assert!(verify(&report.machine)
-        .iter()
-        .all(|finding| matches!(finding, Finding::DeadEndState(_))));
+    // The slice declares its final state terminal, so a dead end is not a finding.
+    assert_eq!(report.machine.terminals, vec![sextant::core::State("done".to_string())]);
+    assert!(verify(&report.machine).is_empty());
     let sliced_trace = replay(&report.machine, &events).unwrap();
     assert_eq!(sliced_trace.steps, trace.steps);
     assert_eq!(sliced_trace.final_env, trace.final_env);

@@ -176,7 +176,7 @@ sextant/
 │       ├── io.rs             <- the only file/stdout/stderr boundary
 │       └── run.rs            <- command orchestration
 ├── tests/
-│   ├── core.rs               <- 11 pure-core tests
+│   ├── core.rs               <- 12 pure-core tests
 │   ├── cli.rs                <- 23 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
