@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "name": "sextant",
+  "repo": "Sextant",
+  "has_ui": false,
+  "ui_kind": "library",
+  "palette": [
+    "#070c12",
+    "#141230",
+    "#6698f5",
+    "#df8ef5"
+  ],
+  "motif": "grid",
+  "layout": "left",
+  "assets": {
+    "logo": {
+      "path": "assets/logo.svg",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-11-22T12:19:57",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:opencode",
+        "method": "structural",
+        "notes": "512x512 SVG uses the AegeanWorks grid motif with SE initials and studio wordmark; readable at small sizes.",
+        "score": 88,
+        "reviewed_at": "2026-11-22T12:20:34"
+      }
+    },
+    "social_preview": {
+      "path": "assets/social-preview.svg",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-11-22T12:19:57",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:opencode",
+        "method": "structural",
+        "notes": "1280x640 SVG has title, Rust CLI description, three project tags and correct repository URL.",
+        "score": 90,
+        "reviewed_at": "2026-11-22T12:20:35"
+      }
+    },
+    "social_preview_png": {
+      "path": "assets/social-preview.png",
+      "status": "approved",
+      "commit": "",
+      "generated_at": "2026-11-22T12:19:58",
+      "review": {
+        "status": "approved",
+        "reviewer": "agent:opencode",
+        "method": "structural",
+        "notes": "Raster preview matches the SVG at 1280x640 with no clipped text or distorted mark.",
+        "score": 90,
+        "reviewed_at": "2026-11-22T12:20:35"
+      }
+    },
+    "logo_png": {
+      "path": "assets/logo.png",
+      "status": "pending_review",
+      "commit": "",
+      "generated_at": "2026-11-22T12:19:59",
+      "review": null
+    }
+  },
+  "screenshots": []
+}
