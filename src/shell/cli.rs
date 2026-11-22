@@ -5,6 +5,7 @@ pub enum Command {
     Help,
     Version,
     Inventory,
+    Doctor { json: bool },
     Check { machine: String, json: bool },
     Replay { machine: String, events: String, out: Option<String> },
     Golden { machine: String, events: String, golden: String, update: bool },
@@ -40,6 +41,7 @@ pub fn usage_text() -> String {
         "  sextant generate <machine.sex> --seed N [--count M] [--out <events.sex>]",
         "  sextant demo --scripted [--seed N]",
         "  sextant inventory",
+        "  sextant doctor [--json]",
         "  sextant --help | --version",
         "",
         "EXIT CODES",
@@ -145,6 +147,17 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
     match args[0].as_str() {
         "--help" | "-h" | "help" => Ok(Command::Help),
         "--version" | "-V" => Ok(Command::Version),
+        "doctor" => {
+            let (positional, _, switches) = split(args, &[], &["--json"])?;
+            if !positional.is_empty() {
+                return Err(CliError {
+                    message: "doctor takes no positional arguments".to_string(),
+                });
+            }
+            Ok(Command::Doctor {
+                json: switches.iter().any(|flag| flag == "--json"),
+            })
+        }
         "inventory" => {
             let (positional, _, _) = split(args, &[], &[])?;
             if !positional.is_empty() {

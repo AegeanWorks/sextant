@@ -353,6 +353,18 @@ fn json_output_is_machine_readable_for_three_commands() {
 }
 
 #[test]
+fn doctor_self_check_passes_in_text_and_json() {
+    let text = run(&["doctor"]);
+    assert_eq!(text.0, 0, "stderr: {}", text.2);
+    assert!(text.1.contains("11/11 checks passed"));
+
+    let json = run(&["doctor", "--json"]);
+    assert_eq!(json.0, 0, "stderr: {}", json.2);
+    assert!(json.1.starts_with("{\"ok\":true"));
+    assert_eq!(text.1, run(&["doctor"]).1);
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

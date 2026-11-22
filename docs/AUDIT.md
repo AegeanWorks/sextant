@@ -63,13 +63,14 @@ Command run from `projects/sextant`:
 ```
 $ cargo test
 running 3 tests   (architecture)  -> ok. 3 passed; 0 failed
-running 18 tests  (cli)           -> ok. 18 passed; 0 failed
+running 19 tests  (cli)           -> ok. 19 passed; 0 failed
 running 11 tests  (core)          -> ok. 11 passed; 0 failed
 running 7 tests   (features)      -> ok. 7 passed; 0 failed
 running 5 tests   (behavior)      -> ok. 5 passed; 0 failed
 running 5 tests   (fuzz)          -> ok. 5 passed; 0 failed
 running 4 tests   (json)          -> ok. 4 passed; 0 failed
-total: 53 passed, 0 failed, EXIT=0
+running 2 tests   (doctor)        -> ok. 2 passed; 0 failed
+total: 56 passed, 0 failed, EXIT=0
 ```
 
 Sample behavioural checks:

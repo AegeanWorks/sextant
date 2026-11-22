@@ -6,10 +6,11 @@ use std::path::Path;
 
 use crate::core::engine::explore;
 use crate::core::{
-    check_json, coverage, diff_traces, equivalent, explore_json, fuzz, fuzz_json,
+    check_json, coverage, diff_traces, doctor_json, equivalent, explore_json, fuzz, fuzz_json,
     generate_events, json_to_string, minimize, parse_events, parse_graph_format, parse_machine,
-    replay, render_coverage, render_equivalence, render_findings, render_fuzz, render_graph,
-    render_minimize, render_trace, verify, Event, Machine, RuleType,
+    render_coverage, render_doctor, render_equivalence, render_findings, render_fuzz,
+    render_graph, render_minimize, render_trace, replay, self_check, verify, Event, Machine,
+    RuleType,
 };
 
 use super::cli::Command;
@@ -533,6 +534,26 @@ fn run_generate(machine_path: &str, seed: u64, count: usize, out_path: Option<&s
     )
 }
 
+fn run_doctor(json: bool) -> u8 {
+    let mut state = SessionState::Idle;
+    if step(&mut state, SessionEvent::Finish).is_err() {
+        return 2;
+    }
+    let results = self_check();
+    let rendered = if json {
+        format!("{}\n", json_to_string(&doctor_json(&results)))
+    } else {
+        render_doctor(&results)
+    };
+    io::write_stdout(&rendered);
+    if results.iter().all(|item| item.ok) {
+        0
+    } else {
+        io::err("error: doctor found a failing check");
+        1
+    }
+}
+
 fn run_inventory() -> u8 {
     let mut state = SessionState::Idle;
     if step(&mut state, SessionEvent::Finish).is_err() {
@@ -575,6 +596,7 @@ pub fn run(command: Command) -> u8 {
             0
         }
         Command::Inventory => run_inventory(),
+        Command::Doctor { json } => run_doctor(json),
         Command::Check { machine, json } => run_check(&machine, json),
         Command::Replay { machine, events, out } => run_replay(&machine, &events, out.as_deref()),
         Command::Golden {

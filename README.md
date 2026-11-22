@@ -26,6 +26,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- graph examples/retry.sex --format mermaid
   cargo run --quiet -- equiv examples/retry.sex examples/retry_renamed.sex
   cargo run --quiet -- fuzz examples/strict.sex --seeds 64 --invariant tries_bound
+  cargo run --quiet -- doctor
   ```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
@@ -53,6 +54,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 | `generate <machine.sex> --seed N [--count M]` | Emit a reproducible event script from a pure seeded PRNG (no clock, no `rand` crate). |
 | `demo --scripted [--seed N]` | Deterministic scripted drive (`SEED:` / `WORLD-DELTA:` / `OK:`), the Rust replacement for the AIKit Python starter. |
 | `inventory` | Machine-readable `kind|name|locator` inventory consumed by AIKit's compat gate. |
+| `doctor [--json]` | File-independent self-check of every core engine; exit 0 means all checks passed. |
 
 Exit codes: `0` success, `1` verification or behaviour failure, `2` usage error.
 `replay` and `generate` write only machine-readable data to stdout; status goes to stderr
@@ -148,6 +150,7 @@ sextant/
 │   │   ├── parse.rs          <- pure machine and event-script parsers
 │   │   ├── engine.rs         <- transition, replay, verify, explore, seeded PRNG
 │   │   ├── format.rs         <- deterministic trace rendering and diffing
+│   │   ├── doctor.rs         <- pure built-in self-check over an embedded model
 │   │   ├── coverage.rs       <- state/event/transition coverage from a trace
 │   │   ├── minimize.rs       <- 1-minimal reproducer with an explicit state machine
 │   │   ├── graph.rs          <- DOT and Mermaid rendering
@@ -163,11 +166,12 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 11 pure-core tests
-│   ├── cli.rs                <- 18 end-to-end process tests
+│   ├── cli.rs                <- 19 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
 │   ├── fuzz.rs               <- 5 fuzz/shadowing tests
 │   ├── json.rs               <- 4 JSON serializer tests
+│   ├── doctor.rs             <- 2 self-check determinism tests
 │   └── architecture.rs       <- 3 architectural audit tests
 ├── examples/
 │   ├── retry.sex             <- example machine

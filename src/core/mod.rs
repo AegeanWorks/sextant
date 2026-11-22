@@ -1,4 +1,5 @@
 pub mod coverage;
+pub mod doctor;
 pub mod engine;
 pub mod equivalence;
 pub mod error;
@@ -11,6 +12,7 @@ pub mod model;
 pub mod parse;
 
 pub use coverage::{coverage, percent, render_coverage, Coverage};
+pub use doctor::{doctor_json, render_doctor, self_check, CheckResult};
 pub use engine::{
     choose_transition, explore, generate_events, replay, verify, ExploreResult, Rng, RuleType,
     Violation,

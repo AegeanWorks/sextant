@@ -46,3 +46,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: Sextant's text reports are good for humans but awkward in CI pipelines, which need a stable machine-readable shape. Adding a JSON dependency is unnecessary and would break the zero-dependency contract.
 - **Decision**: Add a minimal pure JSON value type and serializer in src/core/json.rs, and a --json switch on check, explore and fuzz. Object key order is fixed by construction, so output is byte-stable. Text output remains the default.
 - **Consequences**: Three CLI variants gain a boolean field; a new core module and test module are added; no dependencies. JSON keys are part of the public contract and are documented in DSL.md.
+
+### ADR-006: ADR-006: Built-in doctor self-check
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: A user landing on a new machine needs one command that proves the binary, the parsers, replay determinism and the auxiliary engines actually work before trusting a golden file.
+- **Decision**: Add a pure doctor core that runs a fixed embedded model through parse, verify, replay, golden rendering, exploration, seeded generation, minimization state transitions and JSON serialization, returning a list of named results. The shell renders text or JSON and maps any failure to exit 1.
+- **Consequences**: A new core module and CLI command; no external files are read by the check itself, so it cannot be fooled by a broken fixture. All checks are pure and deterministic.

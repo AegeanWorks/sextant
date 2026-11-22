@@ -174,6 +174,13 @@ transition can never be the only enabled one. The analysis is deliberately conse
 `!=`, comparisons between two variables, and mixed expressions are not modelled and
 never produce a finding.
 
+## Self-check
+
+`doctor [--json]` runs eleven pure checks against a model embedded in the binary: parse,
+structure, event parse, replay determinism, golden rendering, coverage, exploration,
+seeded generation, the minimizer table, JSON serialization and self-equivalence. It reads
+no files, so a broken fixture in the working directory cannot affect the verdict.
+
 ## JSON output
 
 `check`, `explore` and `fuzz` accept `--json`. Each prints one compact object with fixed
