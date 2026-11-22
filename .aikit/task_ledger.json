@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-fsm-core",
+    "task_id": "sextant-readme-tree",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795311285.9307256,
+    "updated_at": 1795311368.9524465,
     "owner": "opencode:sextant",
-    "lease_until": 1795318485.9307256,
+    "lease_until": 1795318568.9524465,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,9 +16,10 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795311286.4278982,
-    "completed_head": "0bccccfbf1e97f4aa18505841ebc627a158840ca",
-    "completed_tree": "1c6e114be27d1b15f7e5634be2b0bdb2e01d2679"
+    "completed_without_impact_assessment": true,
+    "completed_at": 1795311377.1292462,
+    "completed_head": "4b1800092edeced5d93a20e59b50d5ad24a3cccd",
+    "completed_tree": "3fde69814316646a4126490b6b3ea10b87df9706"
   },
   "checkpoints": [
     {
@@ -124,6 +125,41 @@
       "timestamp_str": "2026-11-22 04:34:46",
       "agent": "opencode:sextant",
       "head": "0bccccfbf1e97f4aa18505841ebc627a158840ca",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-readme-tree",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Complete the README tracked-path inventory (cargo dir and mod.rs files) after the delivery commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795311368.9524465,
+      "timestamp_str": "2026-11-22 04:36:08",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-readme-tree",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-readme-tree' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795311377.4858885,
+      "timestamp_str": "2026-11-22 04:36:17",
+      "agent": "opencode:sextant",
+      "head": "4b1800092edeced5d93a20e59b50d5ad24a3cccd",
       "delivery": {
         "roots": [
           "."
