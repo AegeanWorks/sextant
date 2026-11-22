@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v02-observability",
+    "task_id": "sextant-v03-properties",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795312242.717959,
+    "updated_at": 1795312993.0617757,
     "owner": "opencode:sextant",
-    "lease_until": 1795319442.717959,
+    "lease_until": 1795320193.0617757,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,9 +16,9 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795312250.0226138,
-    "completed_head": "80e878b71c803bd3582e86d44bbd14bc8ca1c5a8",
-    "completed_tree": "e9725cd877a4d3c4f1c4e2584d02a270329f55da"
+    "completed_at": 1795312993.597215,
+    "completed_head": "96ee25bf3d32a4bb9a17ffb976999f745359b285",
+    "completed_tree": "ae56d96d6f4654a316d885bb74467fa4b8f92eb6"
   },
   "checkpoints": [
     {
@@ -269,6 +269,116 @@
       "timestamp_str": "2026-11-22 04:50:50",
       "agent": "opencode:sextant",
       "head": "80e878b71c803bd3582e86d44bbd14bc8ca1c5a8",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v03-properties",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan v0.3: behavioural properties (reaches/avoids/emits) and bounded state-label-independent equivalence",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312837.117138,
+      "timestamp_str": "2026-11-22 05:00:37",
+      "agent": "opencode:sextant",
+      "impact_assessment": {
+        "why": "Programmers need to assert reachability and event emission, and to prove a state-machine refactor preserved behaviour without being defeated by renamed states.",
+        "benefits": "Properties become executable documentation; equiv gives a mechanical regression check for refactors and ports.",
+        "risks": "contract: violation shape changes and output needs a version header; dependency: std only; concurrency: none; state: equivalence must be bounded and deterministic.",
+        "mitigation": "Versioned reports, RuleType to distinguish invariant from property violations, exhaustive tests over the exploration space and deterministic sequence enumeration with a cap."
+      },
+      "plan_digest": "4314b11c8508ee8837ec85898b5e54061f8206c2e491ec182fd88e752bc37320",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v03-properties",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/5] Add property declarations and exploration checks, plus bounded state-label-independent equivalence in the pure core",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312991.6879501,
+      "timestamp_str": "2026-11-22 05:03:11",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v03-properties",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/5] Wire equiv into the CLI, distinguish property from invariant violations, and keep data output on stdout",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312992.1837032,
+      "timestamp_str": "2026-11-22 05:03:12",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v03-properties",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/5] Add property/equivalence examples, behavior tests, ADR-003 and README/DLS/AUDIT documentation",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312992.6201055,
+      "timestamp_str": "2026-11-22 05:03:12",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v03-properties",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[5/5] Phase 4 passed: 41 Rust tests green and all five project gates passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312993.0617757,
+      "timestamp_str": "2026-11-22 05:03:13",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v03-properties",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v03-properties' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795312993.6595078,
+      "timestamp_str": "2026-11-22 05:03:13",
+      "agent": "opencode:sextant",
+      "head": "96ee25bf3d32a4bb9a17ffb976999f745359b285",
       "delivery": {
         "roots": [
           "."
