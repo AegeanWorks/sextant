@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-readme-tree",
+    "task_id": "sextant-v02-observability",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795311368.9524465,
+    "updated_at": 1795312242.717959,
     "owner": "opencode:sextant",
-    "lease_until": 1795318568.9524465,
+    "lease_until": 1795319442.717959,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,10 +16,9 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_without_impact_assessment": true,
-    "completed_at": 1795311377.1292462,
-    "completed_head": "4b1800092edeced5d93a20e59b50d5ad24a3cccd",
-    "completed_tree": "3fde69814316646a4126490b6b3ea10b87df9706"
+    "completed_at": 1795312250.0226138,
+    "completed_head": "80e878b71c803bd3582e86d44bbd14bc8ca1c5a8",
+    "completed_tree": "e9725cd877a4d3c4f1c4e2584d02a270329f55da"
   },
   "checkpoints": [
     {
@@ -160,6 +159,116 @@
       "timestamp_str": "2026-11-22 04:36:17",
       "agent": "opencode:sextant",
       "head": "4b1800092edeced5d93a20e59b50d5ad24a3cccd",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v02-observability",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan v0.2: coverage analysis, deterministic failing-input minimization and FSM graph export",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795311694.1939046,
+      "timestamp_str": "2026-11-22 04:41:34",
+      "agent": "opencode:sextant",
+      "impact_assessment": {
+        "why": "A verifier that only answers pass/fail leaves programmers blind to untested edges, unable to shrink a failing repro, and without a visual model; these are the next highest-value needs and are pure functions of the existing data.",
+        "benefits": "Actionable coverage percentages, a minimal reproducer for a failing invariant, and reviewable DOT/Mermaid diagrams; all three deepen the functional core without new dependencies.",
+        "risks": "contract: new text output formats must be versioned and deterministic; dependency: std only; concurrency: none; state: the minimizer needs its own explicit state machine and must terminate on every input.",
+        "mitigation": "Versioned output headers, sorted iteration, a closed MinimizerState transition table tested exhaustively, and a documented 1-minimality guarantee with bounded replay counts."
+      },
+      "plan_digest": "655ea17913f26f29450cff25ad4c05fed291defd7559798d301e6217406d06f7",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v02-observability",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/5] Add pure core modules for coverage analysis, 1-minimal reduction with an explicit MinimizerState machine, and DOT/Mermaid graph export",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312223.2903326,
+      "timestamp_str": "2026-11-22 04:50:23",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v02-observability",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/5] Wire coverage, minimize and graph into the CLI shell with pipe-safe stdout and versioned reports",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312229.8924778,
+      "timestamp_str": "2026-11-22 04:50:29",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v02-observability",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/5] Add examples, feature tests, README tree entries, AUDIT/ARCHITECTURE updates and ADR-002",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312235.560333,
+      "timestamp_str": "2026-11-22 04:50:35",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v02-observability",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[5/5] Phase 4 passed: 34 Rust tests green and all five project gates passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795312242.717959,
+      "timestamp_str": "2026-11-22 04:50:42",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v02-observability",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v02-observability' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795312250.1936195,
+      "timestamp_str": "2026-11-22 04:50:50",
+      "agent": "opencode:sextant",
+      "head": "80e878b71c803bd3582e86d44bbd14bc8ca1c5a8",
       "delivery": {
         "roots": [
           "."
