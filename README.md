@@ -30,7 +30,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- fmt examples/retry.sex              # print the canonical form
   cargo run --quiet -- diff examples/retry.sex examples/retry_renamed.sex
   cargo run --quiet -- untrace examples/retry.golden
-  cargo run --quiet -- explain examples/retry.sex examples/retry.events TICK
+  cargo run --quiet -- explain examples/retry.sex examples/failing.events TICK
   cargo run --quiet -- reachable examples/retry.sex --depth 4
   ```
 
