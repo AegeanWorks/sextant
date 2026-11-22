@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v05-json",
+    "task_id": "sextant-v06-doctor",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795313962.8321383,
+    "updated_at": 1795314249.7454536,
     "owner": "opencode:sextant",
-    "lease_until": 1795321162.8321383,
+    "lease_until": 1795321449.7454536,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,121 +16,11 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795313963.289323,
-    "completed_head": "73aa891e78b78fa9b5ce6ee40980f9cb1be16cda",
-    "completed_tree": "c2a287e86eeb7c79d8d09b9a82f768ba1dbbff37"
+    "completed_at": 1795314250.2866886,
+    "completed_head": "9eb5a107340d5b4a20ef6f5b287bae624962f2ff",
+    "completed_tree": "32e7918bfab438a30167eaac8f5d873ce4ab0822"
   },
   "checkpoints": [
-    {
-      "task_id": "sextant-v03-properties",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/5] Add property declarations and exploration checks, plus bounded state-label-independent equivalence in the pure core",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312991.6879501,
-      "timestamp_str": "2026-11-22 05:03:11",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v03-properties",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/5] Wire equiv into the CLI, distinguish property from invariant violations, and keep data output on stdout",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312992.1837032,
-      "timestamp_str": "2026-11-22 05:03:12",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v03-properties",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/5] Add property/equivalence examples, behavior tests, ADR-003 and README/DLS/AUDIT documentation",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312992.6201055,
-      "timestamp_str": "2026-11-22 05:03:12",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v03-properties",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 41 Rust tests green and all five project gates passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795312993.0617757,
-      "timestamp_str": "2026-11-22 05:03:13",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v03-properties",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v03-properties' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795312993.6595078,
-      "timestamp_str": "2026-11-22 05:03:13",
-      "agent": "opencode:sextant",
-      "head": "96ee25bf3d32a4bb9a17ffb976999f745359b285",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
-    {
-      "task_id": "sextant-v04-fuzz",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.4: deterministic seed fuzzing and conservative guard-shadow detection in verify",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795313050.9155624,
-      "timestamp_str": "2026-11-22 05:04:10",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "Random-but-reproducible scripts find failures that structured enumeration can miss, and a shadowed guard is a silent modeling bug that static verification should expose.",
-        "benefits": "A fuzz command whose failures are shrinkable by minimize, and a check finding for an unreachable guarded transition.",
-        "risks": "contract: a new versioned fuzz report and Finding variant; dependency: std only; concurrency: none; state: dominance must be conservative to avoid false positives.",
-        "mitigation": "Limit dominance to single-variable literal intervals, document the boundaries, cap reported fuzz failures, and test determinism and both positive and negative dominance cases."
-      },
-      "plan_digest": "2b8f4d0f04aac2d70e86f8d741d4d97bfc10afb5aa9b4ada47cac3648b49e542",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
     {
       "task_id": "sextant-v04-fuzz",
       "phase": "phase 3",
@@ -366,6 +256,116 @@
       "timestamp_str": "2026-11-22 05:19:23",
       "agent": "opencode:sextant",
       "head": "73aa891e78b78fa9b5ce6ee40980f9cb1be16cda",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v06-doctor",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan v0.6: a pure built-in self-check that exercises every core engine without external files",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795314018.349602,
+      "timestamp_str": "2026-11-22 05:20:18",
+      "agent": "opencode:sextant",
+      "impact_assessment": {
+        "why": "A one-command health check shortens onboarding and makes an environment or binary regression obvious before a real model is trusted.",
+        "benefits": "Deterministic, file-independent proof that parse, verify, replay, explore, generate, minimize and JSON all work; text and JSON output.",
+        "risks": "contract: a new versioned report; dependency: none; concurrency: none; state: the check must be pure and cannot depend on the working directory.",
+        "mitigation": "Embed the fixture in the core, derive all results from pure functions, and test the report byte stability and failure mapping."
+      },
+      "plan_digest": "85b4ab2d9371ef77fae5cd2268f51b72ea45e830f6c8e4a922b5320bd48217fa",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v06-doctor",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/5] Add a pure self-check core that exercises every engine against an embedded model",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795314248.4025507,
+      "timestamp_str": "2026-11-22 05:24:08",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v06-doctor",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/5] Wire doctor into the CLI with text and JSON output and a failure exit code",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795314248.8487556,
+      "timestamp_str": "2026-11-22 05:24:08",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v06-doctor",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/5] Add doctor tests, ADR-006 and README/DSL/AUDIT documentation",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795314249.2950435,
+      "timestamp_str": "2026-11-22 05:24:09",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v06-doctor",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[5/5] Phase 4 passed: 56 Rust tests green and all five project gates passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795314249.7454536,
+      "timestamp_str": "2026-11-22 05:24:09",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v06-doctor",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v06-doctor' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795314250.3504448,
+      "timestamp_str": "2026-11-22 05:24:10",
+      "agent": "opencode:sextant",
+      "head": "9eb5a107340d5b4a20ef6f5b287bae624962f2ff",
       "delivery": {
         "roots": [
           "."
