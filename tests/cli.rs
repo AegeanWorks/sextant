@@ -375,6 +375,8 @@ fn fmt_check_detects_drift_and_fmt_writes_canonical_text() {
     let check = run(&["fmt", as_text(&messy), "--check"]);
     assert_eq!(check.0, 1);
     assert!(check.2.contains("not canonically formatted"));
+    assert!(check.2.contains("Why:"));
+    assert!(check.2.contains("Fix:"));
 
     let formatted = run(&["fmt", as_text(&messy)]);
     assert_eq!(formatted.0, 0, "stderr: {}", formatted.2);

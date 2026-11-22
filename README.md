@@ -27,7 +27,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- equiv examples/retry.sex examples/retry_renamed.sex
   cargo run --quiet -- fuzz examples/strict.sex --seeds 64 --invariant tries_bound
   cargo run --quiet -- doctor
-  cargo run --quiet -- fmt examples/retry.sex --check
+  cargo run --quiet -- fmt examples/retry.sex              # print the canonical form
   cargo run --quiet -- diff examples/retry.sex examples/retry_renamed.sex
   ```
 

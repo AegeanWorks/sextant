@@ -563,6 +563,11 @@ fn run_fmt(machine_path: &str, out_path: Option<&str>, check: bool) -> u8 {
             finish_quiet(&mut state, "ok: machine is canonically formatted")
         } else {
             io::err(&format!("error: '{}' is not canonically formatted", machine_path));
+            io::err("Why: drift in spacing and declaration order hides real changes in a model diff.");
+            io::err(&format!(
+                "Fix: run `sextant fmt {}` to rewrite it, or `sextant fmt {} --out F` to preview.",
+                machine_path, machine_path
+            ));
             fail(&mut state);
             1
         }
