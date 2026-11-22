@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v08-slice",
+    "task_id": "sextant-v09-terminal",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795331021.5418425,
+    "updated_at": 1795331487.0103295,
     "owner": "opencode:sextant",
-    "lease_until": 1795338221.5418425,
+    "lease_until": 1795338687.0103295,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,121 +16,11 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795331024.9521997,
-    "completed_head": "63868963c2a29a3892123134c7d72477b165c188",
-    "completed_tree": "4a3968d4d6e9fcbbe7f0b86f7e67a1582a19b84f"
+    "completed_at": 1795331490.3800366,
+    "completed_head": "4940ec205dae06d683bb874438f862f5eaeb2495",
+    "completed_tree": "8ace7abeef8c80bb58f08aa99f4e3b810294e32c"
   },
   "checkpoints": [
-    {
-      "task_id": "sextant-v06-doctor",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.6: a pure built-in self-check that exercises every core engine without external files",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795314018.349602,
-      "timestamp_str": "2026-11-22 05:20:18",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "A one-command health check shortens onboarding and makes an environment or binary regression obvious before a real model is trusted.",
-        "benefits": "Deterministic, file-independent proof that parse, verify, replay, explore, generate, minimize and JSON all work; text and JSON output.",
-        "risks": "contract: a new versioned report; dependency: none; concurrency: none; state: the check must be pure and cannot depend on the working directory.",
-        "mitigation": "Embed the fixture in the core, derive all results from pure functions, and test the report byte stability and failure mapping."
-      },
-      "plan_digest": "85b4ab2d9371ef77fae5cd2268f51b72ea45e830f6c8e4a922b5320bd48217fa",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v06-doctor",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/5] Add a pure self-check core that exercises every engine against an embedded model",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795314248.4025507,
-      "timestamp_str": "2026-11-22 05:24:08",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v06-doctor",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/5] Wire doctor into the CLI with text and JSON output and a failure exit code",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795314248.8487556,
-      "timestamp_str": "2026-11-22 05:24:08",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v06-doctor",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/5] Add doctor tests, ADR-006 and README/DSL/AUDIT documentation",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795314249.2950435,
-      "timestamp_str": "2026-11-22 05:24:09",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v06-doctor",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 56 Rust tests green and all five project gates passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795314249.7454536,
-      "timestamp_str": "2026-11-22 05:24:09",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v06-doctor",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v06-doctor' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795314250.3504448,
-      "timestamp_str": "2026-11-22 05:24:10",
-      "agent": "opencode:sextant",
-      "head": "9eb5a107340d5b4a20ef6f5b287bae624962f2ff",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
     {
       "task_id": "sextant-v07-format-diff",
       "phase": "phase 2",
@@ -379,6 +269,116 @@
       "timestamp_str": "2026-11-22 10:03:45",
       "agent": "opencode:sextant",
       "head": "63868963c2a29a3892123134c7d72477b165c188",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v09-terminal",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan v0.9: explicit terminal states so slices verify cleanly without weakening dead-end detection",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795331117.3459415,
+      "timestamp_str": "2026-11-22 10:05:17",
+      "agent": "opencode:sextant",
+      "impact_assessment": {
+        "why": "A deliberate end state and an accidental sink must be distinguishable; v0.8 exposed the cost of conflating them.",
+        "benefits": "Slices replay through every CLI command, and models can document intentional completion points.",
+        "risks": "contract: model and canonical form gain a declaration; dependency: none; concurrency: none; state: verify must skip only declared terminals.",
+        "mitigation": "Require terminals to name declared states, keep the dead-end finding for all others, and test both the accepted and rejected cases."
+      },
+      "plan_digest": "1b068e6375e632f6ba3fbebc6f1403e9c900424dad48937fe8c794dc78c2bf48",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v09-terminal",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/5] Add terminal declarations to the model, parser, verifier and canonical renderer",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795331479.1231055,
+      "timestamp_str": "2026-11-22 10:11:19",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v09-terminal",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/5] Mark slice final states terminal and include terminals in structural diff",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795331481.367775,
+      "timestamp_str": "2026-11-22 10:11:21",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v09-terminal",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/5] Add terminal tests, ADR-009 and DSL/AUDIT/README updates",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795331483.4621863,
+      "timestamp_str": "2026-11-22 10:11:23",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v09-terminal",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[5/5] Phase 4 passed: 69 Rust tests green and all five project gates passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795331487.0103295,
+      "timestamp_str": "2026-11-22 10:11:27",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v09-terminal",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v09-terminal' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795331490.6638997,
+      "timestamp_str": "2026-11-22 10:11:30",
+      "agent": "opencode:sextant",
+      "head": "4940ec205dae06d683bb874438f862f5eaeb2495",
       "delivery": {
         "roots": [
           "."
