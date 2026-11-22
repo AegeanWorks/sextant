@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v07-format-diff",
+    "task_id": "sextant-v07-fmt-polish",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795330442.2127283,
+    "updated_at": 1795330527.5386963,
     "owner": "opencode:sextant",
-    "lease_until": 1795337642.2127283,
+    "lease_until": 1795337727.5386963,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,46 +16,12 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795330442.7168489,
-    "completed_head": "7297135fae1b7c28ee7865a3bbf579b1619417d5",
-    "completed_tree": "d4c07bffd3da27dd8b59a425dac74b40dacc5046"
+    "completed_without_impact_assessment": true,
+    "completed_at": 1795330527.9891317,
+    "completed_head": "75de02c4ba83e98c9e3ef810e5ace53333c92886",
+    "completed_tree": "98b3fe0fbd7987faf0c23eb34a8d9fdd662180f4"
   },
   "checkpoints": [
-    {
-      "task_id": "sextant-ui-evidence",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Record manual has_ui=false so the static HTML field manual is treated as documentation, not a UI surface",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795313520.0875382,
-      "timestamp_str": "2026-11-22 05:12:00",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-ui-evidence",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-ui-evidence' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795313521.2854397,
-      "timestamp_str": "2026-11-22 05:12:01",
-      "agent": "opencode:sextant",
-      "head": "ec55040f9bd22da6f0bcc32b40e640718c2d5ec2",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
     {
       "task_id": "sextant-v05-json",
       "phase": "phase 2",
@@ -379,6 +345,41 @@
       "timestamp_str": "2026-11-22 09:54:02",
       "agent": "opencode:sextant",
       "head": "7297135fae1b7c28ee7865a3bbf579b1619417d5",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v07-fmt-polish",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Explain fmt --check failures with Why/Fix and stop suggesting --check on a human-formatted example",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795330527.5386963,
+      "timestamp_str": "2026-11-22 09:55:27",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v07-fmt-polish",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v07-fmt-polish' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795330528.0513303,
+      "timestamp_str": "2026-11-22 09:55:28",
+      "agent": "opencode:sextant",
+      "head": "75de02c4ba83e98c9e3ef810e5ace53333c92886",
       "delivery": {
         "roots": [
           "."
