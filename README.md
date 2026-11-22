@@ -206,6 +206,11 @@ sextant/
 │   ├── failing.events        <- failing script for the strict example
 │   ├── properties.sex        <- reaches/avoids/emits example
 │   └── retry_renamed.sex     <- renamed-state twin for `equiv`
+├── assets/                   <- approved brand assets
+│   ├── logo.svg              <- square logo mark
+│   ├── logo.png              <- raster logo
+│   ├── social-preview.svg    <- 1280x640 social card
+│   └── social-preview.png    <- raster social card
 ├── docs/
 │   ├── DSL.md                <- grammar and semantics
 │   ├── ARCHITECTURE.md       <- design and constraint rationale
