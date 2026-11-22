@@ -45,6 +45,7 @@ fn reachable_map_is_deterministic_and_contains_the_initial_state() {
     let first = reachable(&machine, 5, 10_000);
     let second = reachable(&machine, 5, 10_000);
     assert_eq!(first, second);
+    assert_eq!(first.skipped_ambiguous, 0);
     assert!(!first.nodes.is_empty());
     let initial = &first.nodes[0];
     assert_eq!(initial.depth, 0);
@@ -53,4 +54,18 @@ fn reachable_map_is_deterministic_and_contains_the_initial_state() {
     assert!(rendered.starts_with("# sextant-reachable v1\n"));
     assert!(rendered.contains("state=idle env={} path=-"));
     assert_eq!(rendered, render_reachable(&second));
+}
+
+#[test]
+fn reachable_counts_ambiguous_transitions_it_cannot_choose() {
+    let machine = parse_machine(
+        "machine amb\ninitial idle\nstate idle\nstate done\nevent GO\n\
+         transition idle GO when tries <= 5 -> done\n\
+         transition idle GO when tries <= 2 -> done\n",
+    )
+    .unwrap();
+    let report = reachable(&machine, 4, 10_000);
+    assert!(report.skipped_ambiguous > 0);
+    let rendered = render_reachable(&report);
+    assert!(rendered.contains("ambiguous transition(s) skipped"));
 }

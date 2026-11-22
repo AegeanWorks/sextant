@@ -19,6 +19,7 @@ pub struct Reachability {
     pub machine: String,
     pub nodes: Vec<ReachNode>,
     pub truncated: bool,
+    pub skipped_ambiguous: usize,
 }
 
 pub fn reachable(machine: &Machine, max_depth: usize, max_nodes: usize) -> Reachability {
@@ -32,6 +33,7 @@ pub fn reachable(machine: &Machine, max_depth: usize, max_nodes: usize) -> Reach
     });
     let mut nodes = Vec::new();
     let mut truncated = false;
+    let mut skipped_ambiguous = 0usize;
     let mut events: Vec<Event> = machine.declared_events.clone();
     events.sort();
 
@@ -48,17 +50,19 @@ pub fn reachable(machine: &Machine, max_depth: usize, max_nodes: usize) -> Reach
             continue;
         }
         for event in &events {
-            if let Ok(Some((_, transition, next_env))) =
-                choose_transition(machine, &node.state, &node.env, event)
-            {
-                let mut path = node.path.clone();
-                path.push((node.state.clone(), event.clone()));
-                queue.push_back(ReachNode {
-                    state: transition.to.clone(),
-                    env: next_env,
-                    depth: node.depth + 1,
-                    path,
-                });
+            match choose_transition(machine, &node.state, &node.env, event) {
+                Ok(Some((_, transition, next_env))) => {
+                    let mut path = node.path.clone();
+                    path.push((node.state.clone(), event.clone()));
+                    queue.push_back(ReachNode {
+                        state: transition.to.clone(),
+                        env: next_env,
+                        depth: node.depth + 1,
+                        path,
+                    });
+                }
+                Ok(None) => {}
+                Err(_) => skipped_ambiguous += 1,
             }
         }
     }
@@ -73,6 +77,7 @@ pub fn reachable(machine: &Machine, max_depth: usize, max_nodes: usize) -> Reach
         machine: machine.name.clone(),
         nodes,
         truncated,
+        skipped_ambiguous,
     }
 }
 
@@ -95,6 +100,12 @@ pub fn render_reachable(report: &Reachability) -> String {
     ];
     if report.truncated {
         lines.push("warning: node cap reached; map is partial".to_string());
+    }
+    if report.skipped_ambiguous > 0 {
+        lines.push(format!(
+            "warning: {} ambiguous transition(s) skipped",
+            report.skipped_ambiguous
+        ));
     }
     for node in &report.nodes {
         lines.push(format!(
