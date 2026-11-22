@@ -6,10 +6,10 @@ use std::path::Path;
 
 use crate::core::engine::explore;
 use crate::core::{
-    coverage, diff_traces, equivalent, fuzz, generate_events, minimize, parse_events,
-    parse_graph_format, parse_machine, replay, render_coverage, render_equivalence,
-    render_findings, render_fuzz, render_graph, render_minimize, render_trace, verify, Event,
-    Machine, RuleType,
+    check_json, coverage, diff_traces, equivalent, explore_json, fuzz, fuzz_json,
+    generate_events, json_to_string, minimize, parse_events, parse_graph_format, parse_machine,
+    replay, render_coverage, render_equivalence, render_findings, render_fuzz, render_graph,
+    render_minimize, render_trace, verify, Event, Machine, RuleType,
 };
 
 use super::cli::Command;
@@ -101,22 +101,39 @@ fn finish_quiet(state: &mut SessionState, message: &str) -> u8 {
     0
 }
 
-fn run_check(machine_path: &str) -> u8 {
+fn run_check(machine_path: &str, json: bool) -> u8 {
     let mut state = SessionState::Idle;
     let machine = match load_machine(machine_path, &mut state) {
         Ok(machine) => machine,
         Err(code) => return code,
     };
-    if let Err(code) = verify_machine(&machine, &mut state) {
-        return code;
+    if step(&mut state, SessionEvent::Verify).is_err() {
+        return 2;
+    }
+    let findings = verify(&machine);
+    if json {
+        let rendered = format!("{}\n", json_to_string(&check_json(&machine, &findings)));
+        io::write_stdout(&rendered);
+        if findings.is_empty() {
+            return finish_quiet(&mut state, "ok: check complete");
+        }
+        io::err(&format!("error: {} finding(s)", findings.len()));
+        fail(&mut state);
+        return 1;
+    }
+    if !findings.is_empty() {
+        io::err(&render_findings(&findings));
+        fail(&mut state);
+        return 1;
     }
     let summary = format!(
-        "ok: '{}' is well-formed ({} states, {} events, {} transitions, {} invariants)",
+        "ok: '{}' is well-formed ({} states, {} events, {} transitions, {} invariants, {} properties)",
         machine.name,
         machine.declared_states.len(),
         machine.declared_events.len(),
         machine.transitions.len(),
-        machine.invariants.len()
+        machine.invariants.len(),
+        machine.properties.len()
     );
     finish(&mut state, &summary)
 }
@@ -227,7 +244,7 @@ fn run_golden(machine_path: &str, events_path: &str, golden_path: &str, update: 
     }
 }
 
-fn run_explore(machine_path: &str, depth: usize) -> u8 {
+fn run_explore(machine_path: &str, depth: usize, json: bool) -> u8 {
     let mut state = SessionState::Idle;
     let machine = match load_machine(machine_path, &mut state) {
         Ok(machine) => machine,
@@ -240,6 +257,18 @@ fn run_explore(machine_path: &str, depth: usize) -> u8 {
         return 2;
     }
     let result = explore(&machine, depth, MAX_EXPLORE_CONFIGURATIONS);
+    if json {
+        io::write_stdout(&format!("{}\n", json_to_string(&explore_json(&result))));
+        if result.violations.is_empty() {
+            return finish_quiet(&mut state, "ok: exploration complete");
+        }
+        io::err(&format!(
+            "error: {} rule violation(s)",
+            result.violations.len()
+        ));
+        fail(&mut state);
+        return 1;
+    }
     io::out(&format!(
         "explored {} configuration(s), {} transition(s), {} rule(s) at depth {}",
         result.configurations, result.transitions_taken, result.rules_checked, depth
@@ -280,6 +309,7 @@ fn run_fuzz(
     count: usize,
     invariant: Option<&str>,
     out_path: Option<&str>,
+    json: bool,
 ) -> u8 {
     let mut state = SessionState::Idle;
     let machine = match load_machine(machine_path, &mut state) {
@@ -293,7 +323,11 @@ fn run_fuzz(
         return 2;
     }
     let result = fuzz(&machine, seeds, count, invariant);
-    let rendered = render_fuzz(&result);
+    let rendered = if json {
+        format!("{}\n", json_to_string(&fuzz_json(&result)))
+    } else {
+        render_fuzz(&result)
+    };
     if emit_data(&rendered, out_path, &mut state).is_err() {
         return 1;
     }
@@ -541,7 +575,7 @@ pub fn run(command: Command) -> u8 {
             0
         }
         Command::Inventory => run_inventory(),
-        Command::Check { machine } => run_check(&machine),
+        Command::Check { machine, json } => run_check(&machine, json),
         Command::Replay { machine, events, out } => run_replay(&machine, &events, out.as_deref()),
         Command::Golden {
             machine,
@@ -549,7 +583,7 @@ pub fn run(command: Command) -> u8 {
             golden,
             update,
         } => run_golden(&machine, &events, &golden, update),
-        Command::Explore { machine, depth } => run_explore(&machine, depth),
+        Command::Explore { machine, depth, json } => run_explore(&machine, depth, json),
         Command::Equiv {
             left,
             right,
@@ -562,7 +596,15 @@ pub fn run(command: Command) -> u8 {
             count,
             invariant,
             out,
-        } => run_fuzz(&machine, seeds, count, invariant.as_deref(), out.as_deref()),
+            json,
+        } => run_fuzz(
+            &machine,
+            seeds,
+            count,
+            invariant.as_deref(),
+            out.as_deref(),
+            json,
+        ),
         Command::Coverage { machine, events, out } => {
             run_coverage(&machine, &events, out.as_deref())
         }

@@ -318,6 +318,41 @@ fn check_flags_a_shadowed_guard() {
 }
 
 #[test]
+fn json_output_is_machine_readable_for_three_commands() {
+    let fixture = Fixture::new("json");
+    let machine = fixture.example_machine();
+    let events = fixture.example_events();
+
+    let check = run(&["check", as_text(&machine), "--json"]);
+    assert_eq!(check.0, 0, "stderr: {}", check.2);
+    assert!(check.1.starts_with('{'));
+    assert!(check.1.contains("\"ok\":true"));
+
+    let explore = run(&["explore", as_text(&machine), "--depth", "4", "--json"]);
+    assert_eq!(explore.0, 0, "stderr: {}", explore.2);
+    assert!(explore.1.starts_with('{'));
+    assert!(explore.1.contains("\"violations\":[]"));
+
+    let fuzz = run(&[
+        "fuzz",
+        as_text(&machine),
+        "--seeds",
+        "8",
+        "--count",
+        "12",
+        "--invariant",
+        "tries_bound",
+        "--json",
+    ]);
+    assert_eq!(fuzz.0, 0, "stderr: {}", fuzz.2);
+    assert!(fuzz.1.starts_with('{'));
+    assert!(fuzz.1.contains("\"failures\":0"));
+
+    // JSON mode keeps the status line off stdout.
+    assert!(events.to_str().is_some());
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

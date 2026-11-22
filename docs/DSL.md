@@ -174,6 +174,27 @@ transition can never be the only enabled one. The analysis is deliberately conse
 `!=`, comparisons between two variables, and mixed expressions are not modelled and
 never produce a finding.
 
+## JSON output
+
+`check`, `explore` and `fuzz` accept `--json`. Each prints one compact object with fixed
+key order and a trailing newline; human status goes to stderr, so stdout can be piped:
+
+```
+sextant check retry.sex --json
+{"machine":"retry","ok":true,"counts":{"states":3,...},"findings":[]}
+```
+
+| Command | Stable top-level keys |
+|---|---|
+| `check` | `machine`, `ok`, `counts`, `findings` |
+| `explore` | `ok`, `configurations`, `transitions`, `rules_checked`, `truncated`, `violations` |
+| `fuzz` | `machine`, `ok`, `seeds`, `events_per_seed`, `failures`, `cases` |
+
+A finding object has `rule` and `message`; a violation object has `type`, `rule`, `state`,
+`env` and `path`; a fuzz case has `seed`, `reason` and `events`. These keys are a public
+contract. The serializer is hand-written with `std` only, escapes control characters and
+quotes, and never reorders keys.
+
 ## Error semantics
 
 - `check` is structural: it reports undeclared states/events, identical guards,

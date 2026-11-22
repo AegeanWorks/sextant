@@ -39,3 +39,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: Bounded exploration enumerates structured sequences, but a programmer also wants random-looking reproducible scripts that mimic real usage, and check currently misses the common mistake of a broad transition declared before a narrower one on the same event.
 - **Decision**: Add a pure uzz core that replays generated scripts over a seed range and reports deterministic failures, and extend erify with a shadowed-transition finding based on interval dominance for guarded transitions on the same (state, event).
 - **Consequences**: A new core module and test module; one new Finding variant; a new CLI command with versioned output. Dominance is deliberately limited to one-variable comparisons with literal bounds, so it is conservative and never claims shadowing for non-interval guards.
+
+### ADR-005: ADR-005: Deterministic JSON output for CI
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: Sextant's text reports are good for humans but awkward in CI pipelines, which need a stable machine-readable shape. Adding a JSON dependency is unnecessary and would break the zero-dependency contract.
+- **Decision**: Add a minimal pure JSON value type and serializer in src/core/json.rs, and a --json switch on check, explore and fuzz. Object key order is fixed by construction, so output is byte-stable. Text output remains the default.
+- **Consequences**: Three CLI variants gain a boolean field; a new core module and test module are added; no dependencies. JSON keys are part of the public contract and are documented in DSL.md.

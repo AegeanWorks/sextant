@@ -56,7 +56,8 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 
 Exit codes: `0` success, `1` verification or behaviour failure, `2` usage error.
 `replay` and `generate` write only machine-readable data to stdout; status goes to stderr
-so the output can be piped directly into a file.
+so the output can be piped directly into a file. `check`, `explore` and `fuzz` accept
+`--json` for a single stable JSON object on stdout (keys in fixed order, no dependencies).
 
 ## The model language
 
@@ -152,6 +153,7 @@ sextant/
 │   │   ├── graph.rs          <- DOT and Mermaid rendering
 │   │   ├── equivalence.rs    <- bounded, state-label-independent comparison
 │   │   ├── fuzz.rs           <- reproducible seed-range failure search
+│   │   ├── json.rs           <- std-only deterministic JSON value and serializer
 │   │   └── error.rs          <- pure error/finding types
 │   └── shell/                <- imperative shell
 │       ├── mod.rs            <- module exports
@@ -161,10 +163,11 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 11 pure-core tests
-│   ├── cli.rs                <- 17 end-to-end process tests
+│   ├── cli.rs                <- 18 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
 │   ├── fuzz.rs               <- 5 fuzz/shadowing tests
+│   ├── json.rs               <- 4 JSON serializer tests
 │   └── architecture.rs       <- 3 architectural audit tests
 ├── examples/
 │   ├── retry.sex             <- example machine
