@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v010-doc-fix",
+    "task_id": "sextant-reforge-run-1",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795332844.5316265,
+    "updated_at": 1795337541.506384,
     "owner": "opencode:sextant",
-    "lease_until": 1795340044.5316265,
+    "lease_until": 1795344741.506384,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -17,95 +17,236 @@
       }
     ],
     "completed_without_impact_assessment": true,
-    "completed_at": 1795332859.585175,
-    "completed_head": "3ab167d8559d395b6f048167bab61f789d50c779",
-    "completed_tree": "2e6e139530f9fd0de838169185b2aa670c4581b9"
+    "completed_at": 1795337542.1926694,
+    "completed_head": "354124a66f111e0af2f4dd20b5ebf9a48d30d494",
+    "completed_tree": "a3c215404dd714239cd09774067da73fb4c3c2a5"
   },
   "checkpoints": [
     {
-      "task_id": "sextant-v08-slice",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.8: recover event scripts from traces and slice machines to the transitions a script exercised",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795330580.3056612,
-      "timestamp_str": "2026-11-22 09:56:20",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "Debugging a failing golden trace should not require hand-copying events or manually deleting unrelated model parts.",
-        "benefits": "Round-trip trace tooling and a minimal replayable model for isolating a bug; both pure and deterministic.",
-        "risks": "contract: trace parser must reject malformed input with line numbers; dependency: none; concurrency: none; state: a slice must never silently drop a property.",
-        "mitigation": "Validate the trace header and step shape, derive slices only from recorded transition indices, and report every dropped property explicitly."
-      },
-      "plan_digest": "9a3deccc3030674e61ee30a041d7ac46510dc6207027eadad276279f38e98e89",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v08-slice",
-      "phase": "phase 3",
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 3",
       "phase_num": 3,
-      "description": "[2/5] Add pure trace recovery and transition-slicing to the core",
+      "description": "Reforge stage 3: stage 3 host review reviewed; run active; coverage 33/33",
       "files_affected": [],
       "status": "in_progress",
-      "timestamp": 1795331010.1815064,
-      "timestamp_str": "2026-11-22 10:03:30",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
+      "timestamp": 1795336009.2900188,
+      "timestamp_str": "2026-11-22 11:26:49",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
     },
     {
-      "task_id": "sextant-v08-slice",
-      "phase": "phase 3",
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 4",
       "phase_num": 3,
-      "description": "[3/5] Wire untrace and slice into the shell with pipe-safe output and explicit drop reports",
+      "description": "Reforge stage 4: window 11, 3 commit(s), 12 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
       "files_affected": [],
       "status": "in_progress",
-      "timestamp": 1795331012.4526033,
-      "timestamp_str": "2026-11-22 10:03:32",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
+      "timestamp": 1795336034.5886111,
+      "timestamp_str": "2026-11-22 11:27:14",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
     },
     {
-      "task_id": "sextant-v08-slice",
-      "phase": "phase 3",
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 4",
       "phase_num": 3,
-      "description": "[4/5] Add slice tests, ADR-008 and README/DSL/AUDIT documentation of the terminal-state limitation",
+      "description": "Reforge stage 4: stage 4 host review reviewed; run active; coverage 24/24",
       "files_affected": [],
       "status": "in_progress",
-      "timestamp": 1795331017.93155,
-      "timestamp_str": "2026-11-22 10:03:37",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
+      "timestamp": 1795336337.9119701,
+      "timestamp_str": "2026-11-22 11:32:17",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
     },
     {
-      "task_id": "sextant-v08-slice",
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 5",
+      "phase_num": 3,
+      "description": "Reforge stage 5: window 14, 3 commit(s), 12 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795336481.935793,
+      "timestamp_str": "2026-11-22 11:34:41",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 5",
+      "phase_num": 3,
+      "description": "Reforge stage 5: stage 5 host review reviewed; run active; coverage 22/22",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795336643.8566408,
+      "timestamp_str": "2026-11-22 11:37:23",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 6",
+      "phase_num": 3,
+      "description": "Reforge stage 6: window 17, 3 commit(s), 11 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795336699.3504941,
+      "timestamp_str": "2026-11-22 11:38:19",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 6",
+      "phase_num": 3,
+      "description": "Reforge stage 6: stage 6 host review reviewed; run active; coverage 19/19",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795336891.3679059,
+      "timestamp_str": "2026-11-22 11:41:31",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 7",
+      "phase_num": 3,
+      "description": "Reforge stage 7: window 20, 3 commit(s), 12 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795336928.0034204,
+      "timestamp_str": "2026-11-22 11:42:08",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 7",
+      "phase_num": 3,
+      "description": "Reforge stage 7: stage 7 host review partial; run active; coverage 25/26",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337025.7059886,
+      "timestamp_str": "2026-11-22 11:43:45",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 7",
+      "phase_num": 3,
+      "description": "Reforge stage 7: stage 7 host review reviewed; run active; coverage 26/26",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337058.0248332,
+      "timestamp_str": "2026-11-22 11:44:18",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 8",
+      "phase_num": 3,
+      "description": "Reforge stage 8: window 23, 3 commit(s), 15 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337080.6516662,
+      "timestamp_str": "2026-11-22 11:44:40",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 8",
+      "phase_num": 3,
+      "description": "Reforge stage 8: stage 8 host review reviewed; run active; coverage 28/28",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337145.9658573,
+      "timestamp_str": "2026-11-22 11:45:45",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 9",
+      "phase_num": 3,
+      "description": "Reforge stage 9: window 26, 3 commit(s), 18 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337203.4325411,
+      "timestamp_str": "2026-11-22 11:46:43",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 9",
+      "phase_num": 3,
+      "description": "Reforge stage 9: stage 9 host review reviewed; run active; coverage 45/45",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337319.965552,
+      "timestamp_str": "2026-11-22 11:48:39",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 10",
+      "phase_num": 3,
+      "description": "Reforge stage 10: window 29, 3 commit(s), 18 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337330.78837,
+      "timestamp_str": "2026-11-22 11:48:50",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 10",
+      "phase_num": 3,
+      "description": "Reforge stage 10: stage 10 host review reviewed; run active; coverage 33/33",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337432.9615145,
+      "timestamp_str": "2026-11-22 11:50:32",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 11",
+      "phase_num": 3,
+      "description": "Reforge stage 11: window 32, 3 commit(s), 42 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795337444.2990057,
+      "timestamp_str": "2026-11-22 11:50:44",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "reforge:run-1",
+      "phase": "reforge stage 11",
+      "phase_num": 3,
+      "description": "Reforge stage 11: stage 11 host review reviewed; run completed; coverage 0/0",
+      "files_affected": [],
+      "status": "completed",
+      "timestamp": 1795337498.1319509,
+      "timestamp_str": "2026-11-22 11:51:38",
+      "agent": "opencode",
+      "operator_task": "sextant-v010-doc-fix"
+    },
+    {
+      "task_id": "sextant-reforge-run-1",
       "phase": "phase 4",
       "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 68 Rust tests green and all five project gates passed",
+      "description": "Reforge run-1: 11 stages, 32 commits, every hunk reviewed; applied three manual fixes including two ADR control bytes",
       "files_affected": [],
       "status": "in_progress",
-      "timestamp": 1795331021.5418425,
-      "timestamp_str": "2026-11-22 10:03:41",
+      "timestamp": 1795337541.506384,
+      "timestamp_str": "2026-11-22 11:52:21",
       "agent": "opencode:sextant",
       "checklists": "passed",
       "workspaces": [
@@ -116,270 +257,15 @@
       ]
     },
     {
-      "task_id": "sextant-v08-slice",
+      "task_id": "sextant-reforge-run-1",
       "phase": "completed",
       "phase_num": 5,
-      "description": "Task 'sextant-v08-slice' completed successfully.",
+      "description": "Task 'sextant-reforge-run-1' completed successfully.",
       "status": "completed",
-      "timestamp": 1795331025.3059316,
-      "timestamp_str": "2026-11-22 10:03:45",
+      "timestamp": 1795337542.259001,
+      "timestamp_str": "2026-11-22 11:52:22",
       "agent": "opencode:sextant",
-      "head": "63868963c2a29a3892123134c7d72477b165c188",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
-    {
-      "task_id": "sextant-v09-terminal",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.9: explicit terminal states so slices verify cleanly without weakening dead-end detection",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795331117.3459415,
-      "timestamp_str": "2026-11-22 10:05:17",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "A deliberate end state and an accidental sink must be distinguishable; v0.8 exposed the cost of conflating them.",
-        "benefits": "Slices replay through every CLI command, and models can document intentional completion points.",
-        "risks": "contract: model and canonical form gain a declaration; dependency: none; concurrency: none; state: verify must skip only declared terminals.",
-        "mitigation": "Require terminals to name declared states, keep the dead-end finding for all others, and test both the accepted and rejected cases."
-      },
-      "plan_digest": "1b068e6375e632f6ba3fbebc6f1403e9c900424dad48937fe8c794dc78c2bf48",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v09-terminal",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/5] Add terminal declarations to the model, parser, verifier and canonical renderer",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795331479.1231055,
-      "timestamp_str": "2026-11-22 10:11:19",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v09-terminal",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/5] Mark slice final states terminal and include terminals in structural diff",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795331481.367775,
-      "timestamp_str": "2026-11-22 10:11:21",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v09-terminal",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/5] Add terminal tests, ADR-009 and DSL/AUDIT/README updates",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795331483.4621863,
-      "timestamp_str": "2026-11-22 10:11:23",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v09-terminal",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 69 Rust tests green and all five project gates passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795331487.0103295,
-      "timestamp_str": "2026-11-22 10:11:27",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v09-terminal",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v09-terminal' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795331490.6638997,
-      "timestamp_str": "2026-11-22 10:11:30",
-      "agent": "opencode:sextant",
-      "head": "4940ec205dae06d683bb874438f862f5eaeb2495",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
-    {
-      "task_id": "sextant-v010-diagnostics",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.10: explain stuck events with actual guard values and list reachable configurations with shortest paths",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795332284.0256388,
-      "timestamp_str": "2026-11-22 10:24:44",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "A stuck event currently reports only the symptom; evaluating guards against the replayed environment gives the cause, and a reachable map shows the explored state space.",
-        "benefits": "Faster model debugging and an inspectable view of exploration, both derived from the single pure transition selector.",
-        "risks": "contract: two versioned output formats; dependency: none; concurrency: none; state: replay of the prefix must be exact or the explanation is misleading.",
-        "mitigation": "Derive the environment by replaying the prefix, reuse choose_transition, and test both enabled and disabled guard cases with determinism checks."
-      },
-      "plan_digest": "4217b3aa3fd0a2bfd7865785a97e4991fac81c97d95741afbcbe313120c7b61f",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v010-diagnostics",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/5] Add pure guard evaluation with actual values and a BFS reachable-state map",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795332545.8690913,
-      "timestamp_str": "2026-11-22 10:29:05",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v010-diagnostics",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/5] Wire explain and reachable into the shell with versioned reports and pipe-safe output",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795332546.3700542,
-      "timestamp_str": "2026-11-22 10:29:06",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v010-diagnostics",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/5] Add diagnostics tests, ADR-010 and README/DSL/AUDIT documentation",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795332546.9473321,
-      "timestamp_str": "2026-11-22 10:29:06",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v010-diagnostics",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 74 Rust tests green and all five project gates passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795332547.4133706,
-      "timestamp_str": "2026-11-22 10:29:07",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v010-diagnostics",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v010-diagnostics' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795332547.9810867,
-      "timestamp_str": "2026-11-22 10:29:07",
-      "agent": "opencode:sextant",
-      "head": "62380449d84f4a8c4785362f446c111b90385c94",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
-    {
-      "task_id": "sextant-v010-doc-fix",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Use a prefix that ends in the waiting state so the explain Quick Reference shows an enabled guard",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795332844.5316265,
-      "timestamp_str": "2026-11-22 10:34:04",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v010-doc-fix",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v010-doc-fix' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795332859.7088027,
-      "timestamp_str": "2026-11-22 10:34:19",
-      "agent": "opencode:sextant",
-      "head": "3ab167d8559d395b6f048167bab61f789d50c779",
+      "head": "354124a66f111e0af2f4dd20b5ebf9a48d30d494",
       "delivery": {
         "roots": [
           "."
