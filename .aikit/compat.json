@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "kind": "headless",
+  "has_ui": false,
+  "commands": {
+    "inventory": "python inventory.py",
+    "scripted": "python demo.py --scripted"
+  },
+  "seed": {
+    "flag": "--seed",
+    "replay_log": ".aikit/replay.log"
+  },
+  "bench": {
+    "baseline": ".aikit/bench-baseline.json",
+    "delta": ".aikit/bench-delta.json"
+  },
+  "evidence": {
+    "schema": 1,
+    "file": ".aikit/evidence.json"
+  },
+  "screenshots": {
+    "dir": "assets/screenshots",
+    "before": "",
+    "after": ""
+  },
+  "hooks": {
+    "layout_map": ".aikit/layout-map.json",
+    "clickmap": ".aikit/clickmap.log"
+  }
+}

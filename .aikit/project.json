@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "name": "sextant",
+  "test_command": "cargo test",
+  "topics": [
+    "aikit",
+    "aikit-integrated",
+    "source-available",
+    "aegean-license",
+    "commercial-license",
+    "rust",
+    "state-machine",
+    "developer-tools",
+    "model-checking",
+    "cli"
+  ],
+  "gates": {},
+  "ui_required": false,
+  "map_coverage": "skip",
+  "review_required": false,
+  "mechanics_required": false,
+  "test_budget_ms": null,
+  "python_min": null,
+  "scratch_paths": [],
+  "gate_outputs": [],
+  "created": "2026-11-22"
+}
