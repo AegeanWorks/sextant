@@ -9,6 +9,9 @@ pub enum Command {
     Replay { machine: String, events: String, out: Option<String> },
     Golden { machine: String, events: String, golden: String, update: bool },
     Explore { machine: String, depth: usize },
+    Coverage { machine: String, events: String, out: Option<String> },
+    Minimize { machine: String, events: String, invariant: Option<String>, out: Option<String> },
+    Graph { machine: String, format: String, out: Option<String> },
     Generate { machine: String, seed: u64, count: usize, out: Option<String> },
     Demo { seed: u64 },
 }
@@ -27,6 +30,9 @@ pub fn usage_text() -> String {
         "  sextant replay <machine.sex> <events.sex> [--out <trace.txt>]",
         "  sextant golden <machine.sex> <events.sex> <golden.txt> [--update]",
         "  sextant explore <machine.sex> [--depth N]",
+        "  sextant coverage <machine.sex> <events.sex> [--out <report.txt>]",
+        "  sextant minimize <machine.sex> <events.sex> [--invariant NAME] [--out <events.sex>]",
+        "  sextant graph <machine.sex> [--format dot|mermaid] [--out <file>]",
         "  sextant generate <machine.sex> --seed N [--count M] [--out <events.sex>]",
         "  sextant demo --scripted [--seed N]",
         "  sextant inventory",
@@ -183,6 +189,47 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
             Ok(Command::Explore {
                 machine: exactly_one(&positional, "machine")?,
                 depth: usize_value(&values, "--depth", 8)?,
+            })
+        }
+        "coverage" => {
+            let (positional, values, _) = split(args, &["--out"], &[])?;
+            if positional.len() != 2 {
+                return Err(CliError {
+                    message: "coverage needs a machine file and an event script".to_string(),
+                });
+            }
+            Ok(Command::Coverage {
+                machine: positional[0].clone(),
+                events: positional[1].clone(),
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
+        "minimize" => {
+            let (positional, values, _) = split(args, &["--invariant", "--out"], &[])?;
+            if positional.len() != 2 {
+                return Err(CliError {
+                    message: "minimize needs a machine file and a failing event script".to_string(),
+                });
+            }
+            Ok(Command::Minimize {
+                machine: positional[0].clone(),
+                events: positional[1].clone(),
+                invariant: flag_value(&values, "--invariant")?.map(str::to_string),
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
+        "graph" => {
+            let (positional, values, _) = split(args, &["--format", "--out"], &[])?;
+            let format = flag_value(&values, "--format")?.unwrap_or("dot").to_string();
+            if crate::core::parse_graph_format(&format).is_none() {
+                return Err(CliError {
+                    message: format!("unknown graph format '{}' (use dot or mermaid)", format),
+                });
+            }
+            Ok(Command::Graph {
+                machine: exactly_one(&positional, "machine")?,
+                format,
+                out: flag_value(&values, "--out")?.map(str::to_string),
             })
         }
         "generate" => {

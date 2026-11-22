@@ -42,7 +42,7 @@ fn functional_core_has_no_io_or_ambient_state() {
         }
         checked += 1;
     }
-    assert_eq!(checked, 6, "expected the six core source files (five modules plus mod.rs)");
+    assert_eq!(checked, 9, "expected the nine core source files (eight modules plus mod.rs)");
 }
 
 #[test]

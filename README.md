@@ -21,6 +21,9 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- replay examples/retry.sex examples/retry.events
   cargo run --quiet -- golden examples/retry.sex examples/retry.events examples/retry.golden
   cargo run --quiet -- explore examples/retry.sex --depth 6
+  cargo run --quiet -- coverage examples/retry.sex examples/partial.events
+  cargo run --quiet -- minimize examples/strict.sex examples/failing.events --invariant tries_bound
+  cargo run --quiet -- graph examples/retry.sex --format mermaid
   ```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
@@ -40,6 +43,9 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 | `replay <machine.sex> <events.sex>` | Produce a deterministic, human-readable trace of every transition and environment change. |
 | `golden <machine.sex> <events.sex> <golden.txt> [--update]` | Guard stateful behavior against a committed trace; report the first differing line. |
 | `explore <machine.sex> [--depth N]` | Enumerate reachable `(state, env)` configurations up to a depth and check invariants with a bounded cap. |
+| `coverage <machine.sex> <events.sex>` | Report which states, events and transitions a script actually exercised, and name the missed edges. |
+| `minimize <machine.sex> <events.sex> [--invariant NAME]` | Reduce a failing script to a 1-minimal reproducer; with `--invariant`, only that violation counts as failure. |
+| `graph <machine.sex> [--format dot\|mermaid]` | Export the machine as a reviewable DOT or Mermaid state diagram. |
 | `generate <machine.sex> --seed N [--count M]` | Emit a reproducible event script from a pure seeded PRNG (no clock, no `rand` crate). |
 | `demo --scripted [--seed N]` | Deterministic scripted drive (`SEED:` / `WORLD-DELTA:` / `OK:`), the Rust replacement for the AIKit Python starter. |
 | `inventory` | Machine-readable `kind|name|locator` inventory consumed by AIKit's compat gate. |
@@ -137,6 +143,9 @@ sextant/
 │   │   ├── parse.rs          <- pure machine and event-script parsers
 │   │   ├── engine.rs         <- transition, replay, verify, explore, seeded PRNG
 │   │   ├── format.rs         <- deterministic trace rendering and diffing
+│   │   ├── coverage.rs       <- state/event/transition coverage from a trace
+│   │   ├── minimize.rs       <- 1-minimal reproducer with an explicit state machine
+│   │   ├── graph.rs          <- DOT and Mermaid rendering
 │   │   └── error.rs          <- pure error/finding types
 │   └── shell/                <- imperative shell
 │       ├── mod.rs            <- module exports
@@ -146,12 +155,16 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 11 pure-core tests
-│   ├── cli.rs                <- 9 end-to-end process tests
+│   ├── cli.rs                <- 13 end-to-end process tests
+│   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   └── architecture.rs       <- 3 architectural audit tests
 ├── examples/
 │   ├── retry.sex             <- example machine
 │   ├── retry.events          <- example event script
-│   └── retry.golden          <- committed golden trace
+│   ├── retry.golden          <- committed golden trace
+│   ├── partial.events        <- coverage example (2 of 4 transitions)
+│   ├── strict.sex            <- minimized failing invariant example
+│   └── failing.events        <- failing script for the strict example
 ├── docs/
 │   ├── DSL.md                <- grammar and semantics
 │   ├── ARCHITECTURE.md       <- design and constraint rationale

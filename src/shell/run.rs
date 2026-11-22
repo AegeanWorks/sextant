@@ -6,7 +6,8 @@ use std::path::Path;
 
 use crate::core::engine::explore;
 use crate::core::{
-    diff_traces, generate_events, parse_events, parse_machine, replay, render_findings,
+    coverage, diff_traces, generate_events, minimize, parse_events, parse_graph_format,
+    parse_machine, replay, render_coverage, render_findings, render_graph, render_minimize,
     render_trace, verify, Event, Machine,
 };
 
@@ -267,6 +268,115 @@ fn run_explore(machine_path: &str, depth: usize) -> u8 {
     1
 }
 
+fn emit_data(rendered: &str, out_path: Option<&str>, state: &mut SessionState) -> Result<(), u8> {
+    if let Some(path) = out_path {
+        if let Err(error) = io::write_text(Path::new(path), rendered) {
+            io::err(&format!("error: cannot write {}", error.message()));
+            fail(state);
+            return Err(1);
+        }
+    }
+    io::write_stdout(rendered);
+    Ok(())
+}
+
+fn run_coverage(machine_path: &str, events_path: &str, out_path: Option<&str>) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let events = match load_events(events_path) {
+        Ok(events) => events,
+        Err(code) => {
+            fail(&mut state);
+            return code;
+        }
+    };
+    let trace = match replay(&machine, &events) {
+        Ok(trace) => trace,
+        Err(error) => {
+            io::err(&format!("error: {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let rendered = render_coverage(&machine, &coverage(&machine, &trace));
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    finish_quiet(&mut state, "ok: coverage report complete")
+}
+
+fn run_minimize(
+    machine_path: &str,
+    events_path: &str,
+    invariant: Option<&str>,
+    out_path: Option<&str>,
+) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let events = match load_events(events_path) {
+        Ok(events) => events,
+        Err(code) => {
+            fail(&mut state);
+            return code;
+        }
+    };
+    let report = match minimize(&machine, &events, invariant) {
+        Ok(report) => report,
+        Err(error) => {
+            io::err(&format!("error: {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let rendered = render_minimize(&report);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    finish_quiet(&mut state, "ok: minimization complete")
+}
+
+fn run_graph(machine_path: &str, format_name: &str, out_path: Option<&str>) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    let format = match parse_graph_format(format_name) {
+        Some(format) => format,
+        None => {
+            io::err(&format!("error: unknown graph format '{}'", format_name));
+            fail(&mut state);
+            return 2;
+        }
+    };
+    let rendered = render_graph(&machine, format);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    finish_quiet(&mut state, "ok: graph rendered")
+}
+
 fn run_generate(machine_path: &str, seed: u64, count: usize, out_path: Option<&str>) -> u8 {
     let mut state = SessionState::Idle;
     let machine = match load_machine(machine_path, &mut state) {
@@ -347,6 +457,16 @@ pub fn run(command: Command) -> u8 {
             update,
         } => run_golden(&machine, &events, &golden, update),
         Command::Explore { machine, depth } => run_explore(&machine, depth),
+        Command::Coverage { machine, events, out } => {
+            run_coverage(&machine, &events, out.as_deref())
+        }
+        Command::Minimize {
+            machine,
+            events,
+            invariant,
+            out,
+        } => run_minimize(&machine, &events, invariant.as_deref(), out.as_deref()),
+        Command::Graph { machine, format, out } => run_graph(&machine, &format, out.as_deref()),
         Command::Generate {
             machine,
             seed,

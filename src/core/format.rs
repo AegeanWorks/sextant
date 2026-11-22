@@ -1,7 +1,31 @@
 //! Pure rendering and diffing of traces and findings.
 
 use crate::core::error::Finding;
-use crate::core::model::{Env, Trace};
+use crate::core::model::{Condition, Effect, Env, Operand, Trace};
+
+fn format_operand(operand: &Operand) -> String {
+    match operand {
+        Operand::Literal(value) => value.to_string(),
+        Operand::Variable(name) => name.clone(),
+    }
+}
+
+pub fn format_condition(condition: &Condition) -> String {
+    format!(
+        "{} {} {}",
+        format_operand(&condition.left),
+        condition.comparison.symbol(),
+        format_operand(&condition.right)
+    )
+}
+
+pub fn format_effect(effect: &Effect) -> String {
+    match effect {
+        Effect::Set(name, value) => format!("{} = {}", name, value),
+        Effect::Add(name, value) => format!("{} += {}", name, value),
+        Effect::Subtract(name, value) => format!("{} -= {}", name, value),
+    }
+}
 
 pub fn format_env(env: &Env) -> String {
     if env.is_empty() {

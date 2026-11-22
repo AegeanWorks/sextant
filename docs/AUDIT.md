@@ -63,9 +63,10 @@ Command run from `projects/sextant`:
 ```
 $ cargo test
 running 3 tests   (architecture)  -> ok. 3 passed; 0 failed
-running 9 tests   (cli)           -> ok. 9 passed; 0 failed
+running 13 tests  (cli)           -> ok. 13 passed; 0 failed
 running 11 tests  (core)          -> ok. 11 passed; 0 failed
-total: 23 passed, 0 failed, EXIT=0
+running 7 tests   (features)      -> ok. 7 passed; 0 failed
+total: 34 passed, 0 failed, EXIT=0
 ```
 
 Sample behavioural checks:
@@ -76,6 +77,15 @@ ok: 'retry' is well-formed (3 states, 4 events, 4 transitions, 1 invariants)
 
 $ cargo run --quiet -- golden examples/retry.sex examples/retry.events examples/retry.golden
 ok: golden trace matches
+
+$ cargo run --quiet -- coverage examples/retry.sex examples/partial.events
+transitions: 2/4 (50%)
+  - [3] waiting --OK--> done
+  - [4] done --RESET--> idle
+
+$ cargo run --quiet -- minimize examples/strict.sex examples/failing.events --invariant tries_bound
+minimal: 3 event(s)
+state: Minimal
 ```
 
 ## Deviations handled during the build

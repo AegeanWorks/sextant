@@ -13,6 +13,7 @@ pub enum Error {
     MissingMachineName,
     Stuck { state: State, event: Event },
     Ambiguous { state: State, event: Event },
+    NoFailure,
     Invariant { name: String, step: usize, state: State, env: String },
 }
 
@@ -33,6 +34,7 @@ impl Error {
                 event.as_str(),
                 state.as_str()
             ),
+            Self::NoFailure => "the event script does not fail; nothing to minimize".to_string(),
             Self::Invariant { name, step, state, env } => format!(
                 "invariant '{}' violated at step {} in state '{}' with env {}",
                 name, step, state.as_str(), env

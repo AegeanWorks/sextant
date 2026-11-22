@@ -200,6 +200,62 @@ fn scripted_demo_replaces_the_python_starter() {
 }
 
 #[test]
+fn coverage_reports_missed_transitions_through_the_cli() {
+    let fixture = Fixture::new("coverage");
+    let machine = fixture.example_machine();
+    let events = fixture.write("partial.events", include_str!("../examples/partial.events"));
+    let (code, stdout, stderr) = run(&[
+        "coverage",
+        as_text(&machine),
+        as_text(&events),
+    ]);
+    assert_eq!(code, 0, "stderr: {}", stderr);
+    assert!(stdout.contains("transitions: 2/4 (50%)"));
+    assert!(stdout.contains("waiting --OK--> done"));
+}
+
+#[test]
+fn minimize_reduces_a_failing_script_through_the_cli() {
+    let fixture = Fixture::new("minimize");
+    let machine = fixture.write("strict.sex", include_str!("../examples/strict.sex"));
+    let events = fixture.write("failing.events", include_str!("../examples/failing.events"));
+    let (code, stdout, stderr) = run(&[
+        "minimize",
+        as_text(&machine),
+        as_text(&events),
+        "--invariant",
+        "tries_bound",
+    ]);
+    assert_eq!(code, 0, "stderr: {}", stderr);
+    assert!(stdout.contains("original: 3 event(s)"));
+    assert!(stdout.contains("minimal: 3 event(s)"));
+    assert!(stdout.contains("state: Minimal"));
+
+    let passing = run(&[
+        "minimize",
+        as_text(&fixture.example_machine()),
+        as_text(&fixture.example_events()),
+    ]);
+    assert_eq!(passing.0, 1);
+    assert!(passing.2.contains("does not fail"));
+}
+
+#[test]
+fn graph_renders_both_formats_through_the_cli() {
+    let fixture = Fixture::new("graph");
+    let machine = fixture.example_machine();
+    let dot = run(&["graph", as_text(&machine), "--format", "dot"]);
+    assert_eq!(dot.0, 0, "stderr: {}", dot.2);
+    assert!(dot.1.starts_with("digraph retry {"));
+    let mermaid = run(&["graph", as_text(&machine), "--format", "mermaid"]);
+    assert_eq!(mermaid.0, 0, "stderr: {}", mermaid.2);
+    assert!(mermaid.1.starts_with("stateDiagram-v2"));
+    let bad = run(&["graph", as_text(&machine), "--format", "png"]);
+    assert_eq!(bad.0, 2);
+    assert!(bad.2.contains("unknown graph format"));
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

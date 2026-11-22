@@ -1,14 +1,26 @@
+pub mod coverage;
 pub mod engine;
 pub mod error;
 pub mod format;
+pub mod graph;
+pub mod minimize;
 pub mod model;
 pub mod parse;
 
+pub use coverage::{coverage, percent, render_coverage, Coverage};
 pub use engine::{
     choose_transition, explore, generate_events, replay, verify, ExploreResult, Rng, Violation,
 };
 pub use error::{Error, Finding};
-pub use format::{diff_traces, format_env, render_findings, render_trace, TraceDiff};
+pub use format::{
+    diff_traces, format_condition, format_effect, format_env, render_findings, render_trace,
+    TraceDiff,
+};
+pub use graph::{format_name as graph_format_name, parse_graph_format, render_graph, GraphFormat};
+pub use minimize::{
+    fails, minimizer_transition, minimize, render_minimize, IllegalMinimizerTransition,
+    MinimizeResult, MinimizerEvent, MinimizerState, TRANSITIONS as MINIMIZER_TRANSITIONS,
+};
 pub use model::{
     Comparison, Condition, Effect, Env, Event, Invariant, Machine, Operand, State, Trace,
     TraceStep, Transition,
