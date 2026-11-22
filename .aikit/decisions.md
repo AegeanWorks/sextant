@@ -53,3 +53,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: A user landing on a new machine needs one command that proves the binary, the parsers, replay determinism and the auxiliary engines actually work before trusting a golden file.
 - **Decision**: Add a pure doctor core that runs a fixed embedded model through parse, verify, replay, golden rendering, exploration, seeded generation, minimization state transitions and JSON serialization, returning a list of named results. The shell renders text or JSON and maps any failure to exit 1.
 - **Consequences**: A new core module and CLI command; no external files are read by the check itself, so it cannot be fooled by a broken fixture. All checks are pure and deterministic.
+
+### ADR-007: ADR-007: Canonical formatter and structural machine diff
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: Models are reviewed in diffs, but hand-written declaration order and spacing make semantic changes hard to see, and there is no way to list what changed between two machine files.
+- **Decision**: Add a pure canonical renderer used by mt (with --check for CI) and a pure structural diff of states, events, transitions, invariants, properties and the initial state. Transition identity is its rendered semantic form, so whitespace and declaration order do not create false differences.
+- **Consequences**: Two new core modules and CLI commands; no dependencies. Canonical output is idempotent by construction. Diff reports are versioned and can be rendered as JSON.

@@ -365,6 +365,41 @@ fn doctor_self_check_passes_in_text_and_json() {
 }
 
 #[test]
+fn fmt_check_detects_drift_and_fmt_writes_canonical_text() {
+    let fixture = Fixture::new("fmt");
+    let messy = fixture.write(
+        "messy.sex",
+        "event START\nstate idle\nstate waiting\nmachine messy\ninitial idle\n\
+         transition idle START -> waiting\n",
+    );
+    let check = run(&["fmt", as_text(&messy), "--check"]);
+    assert_eq!(check.0, 1);
+    assert!(check.2.contains("not canonically formatted"));
+
+    let formatted = run(&["fmt", as_text(&messy)]);
+    assert_eq!(formatted.0, 0, "stderr: {}", formatted.2);
+    assert!(formatted.1.starts_with("machine messy\ninitial idle\n"));
+    let canonical = fixture.write("canonical.sex", &formatted.1);
+    let clean = run(&["fmt", as_text(&canonical), "--check"]);
+    assert_eq!(clean.0, 0, "stderr: {}", clean.2);
+}
+
+#[test]
+fn diff_reports_structural_changes_in_text_and_json() {
+    let fixture = Fixture::new("diff");
+    let left = fixture.example_machine();
+    let right = fixture.write("renamed.sex", include_str!("../examples/retry_renamed.sex"));
+    let text = run(&["diff", as_text(&left), as_text(&right)]);
+    assert_eq!(text.0, 0, "stderr: {}", text.2);
+    assert!(text.1.contains("initial: idle -> resting"));
+    assert!(text.1.contains("changes: 15"));
+    let json = run(&["diff", as_text(&left), as_text(&right), "--json"]);
+    assert_eq!(json.0, 0, "stderr: {}", json.2);
+    assert!(json.1.starts_with('{'));
+    assert!(json.1.contains("\"changes\":15"));
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

@@ -174,6 +174,20 @@ transition can never be the only enabled one. The analysis is deliberately conse
 `!=`, comparisons between two variables, and mixed expressions are not modelled and
 never produce a finding.
 
+## Canonical form and diff
+
+`fmt` parses a machine and re-renders it in a fixed order: machine, initial, sorted
+states, sorted events, transitions sorted by semantic text, sorted invariants and sorted
+properties. Comments are intentionally dropped. `fmt --check` exits 1 when the file is not
+already canonical, which makes it usable as a style gate; `fmt --out F` writes the
+canonical text instead of stdout.
+
+`diff` compares two machines by the canonical text of each element, so reordering
+declarations or changing whitespace produces zero changes. Its versioned report
+(`# sextant-diff v1`) lists added and removed states, events, transitions, invariants and
+properties, plus a changed initial state. `--json` emits the same information with stable
+keys.
+
 ## Self-check
 
 `doctor [--json]` runs eleven pure checks against a model embedded in the binary: parse,

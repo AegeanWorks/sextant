@@ -27,6 +27,8 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- equiv examples/retry.sex examples/retry_renamed.sex
   cargo run --quiet -- fuzz examples/strict.sex --seeds 64 --invariant tries_bound
   cargo run --quiet -- doctor
+  cargo run --quiet -- fmt examples/retry.sex --check
+  cargo run --quiet -- diff examples/retry.sex examples/retry_renamed.sex
   ```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
@@ -55,6 +57,8 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 | `demo --scripted [--seed N]` | Deterministic scripted drive (`SEED:` / `WORLD-DELTA:` / `OK:`), the Rust replacement for the AIKit Python starter. |
 | `inventory` | Machine-readable `kind|name|locator` inventory consumed by AIKit's compat gate. |
 | `doctor [--json]` | File-independent self-check of every core engine; exit 0 means all checks passed. |
+| `fmt <machine.sex> [--check] [--out F]` | Canonical, idempotent formatter; `--check` fails in CI when a file is not canonical. |
+| `diff <left.sex> <right.sex> [--json]` | Structural diff of states, events, transitions, invariants and properties. |
 
 Exit codes: `0` success, `1` verification or behaviour failure, `2` usage error.
 `replay` and `generate` write only machine-readable data to stdout; status goes to stderr
@@ -146,6 +150,8 @@ sextant/
 │   ├── lib.rs
 │   ├── core/                 <- pure functional core (no I/O)
 │   │   ├── mod.rs            <- module exports
+│   │   ├── canonical.rs      <- idempotent machine formatter
+│   │   ├── machine_diff.rs   <- structural diff of two machines
 │   │   ├── model.rs          <- State, Event, Condition, Effect, Machine, Trace
 │   │   ├── parse.rs          <- pure machine and event-script parsers
 │   │   ├── engine.rs         <- transition, replay, verify, explore, seeded PRNG
@@ -166,12 +172,13 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 11 pure-core tests
-│   ├── cli.rs                <- 19 end-to-end process tests
+│   ├── cli.rs                <- 21 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
 │   ├── fuzz.rs               <- 5 fuzz/shadowing tests
 │   ├── json.rs               <- 4 JSON serializer tests
 │   ├── doctor.rs             <- 2 self-check determinism tests
+│   ├── format_diff.rs        <- 4 formatter/diff tests
 │   └── architecture.rs       <- 3 architectural audit tests
 ├── examples/
 │   ├── retry.sex             <- example machine

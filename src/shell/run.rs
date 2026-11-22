@@ -6,11 +6,11 @@ use std::path::Path;
 
 use crate::core::engine::explore;
 use crate::core::{
-    check_json, coverage, diff_traces, doctor_json, equivalent, explore_json, fuzz, fuzz_json,
-    generate_events, json_to_string, minimize, parse_events, parse_graph_format, parse_machine,
-    render_coverage, render_doctor, render_equivalence, render_findings, render_fuzz,
-    render_graph, render_minimize, render_trace, replay, self_check, verify, Event, Machine,
-    RuleType,
+    canonicalize, check_json, coverage, diff_json, diff_traces, doctor_json, equivalent,
+    explore_json, fuzz, fuzz_json, generate_events, json_to_string, machine_diff, minimize,
+    parse_events, parse_graph_format, parse_machine, render_coverage, render_diff, render_doctor,
+    render_equivalence, render_findings, render_fuzz, render_graph, render_minimize, render_trace,
+    replay, self_check, verify, Event, Machine, RuleType,
 };
 
 use super::cli::Command;
@@ -534,6 +534,91 @@ fn run_generate(machine_path: &str, seed: u64, count: usize, out_path: Option<&s
     )
 }
 
+fn run_fmt(machine_path: &str, out_path: Option<&str>, check: bool) -> u8 {
+    let mut state = SessionState::Idle;
+    if step(&mut state, SessionEvent::Load).is_err() {
+        return 2;
+    }
+    let text = match io::read_text(Path::new(machine_path)) {
+        Ok(text) => text,
+        Err(error) => {
+            io::err(&format!("error: cannot read {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let canonical = match canonicalize(&text) {
+        Ok(canonical) => canonical,
+        Err(error) => {
+            io::err(&format!("error: {}: {}", machine_path, error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    if step(&mut state, SessionEvent::Verify).is_err() {
+        return 2;
+    }
+    if check {
+        if canonical == text {
+            finish_quiet(&mut state, "ok: machine is canonically formatted")
+        } else {
+            io::err(&format!("error: '{}' is not canonically formatted", machine_path));
+            fail(&mut state);
+            1
+        }
+    } else {
+        if let Some(path) = out_path {
+            if let Err(error) = io::write_text(Path::new(path), &canonical) {
+                io::err(&format!("error: cannot write {}", error.message()));
+                fail(&mut state);
+                return 1;
+            }
+        }
+        io::write_stdout(&canonical);
+        finish_quiet(&mut state, "ok: canonical form emitted")
+    }
+}
+
+fn run_diff(left_path: &str, right_path: &str, json: bool) -> u8 {
+    let mut state = SessionState::Idle;
+    let left = match load_machine(left_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    let right = match io::read_text(Path::new(right_path)) {
+        Ok(text) => match parse_machine(&text) {
+            Ok(machine) => machine,
+            Err(error) => {
+                io::err(&format!("error: {}: {}", right_path, error.message()));
+                fail(&mut state);
+                return 1;
+            }
+        },
+        Err(error) => {
+            io::err(&format!("error: cannot read {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let findings = verify(&right);
+    if !findings.is_empty() {
+        io::err(&render_findings(&findings));
+        fail(&mut state);
+        return 1;
+    }
+    let report = machine_diff(&left, &right);
+    let rendered = if json {
+        format!("{}\n", json_to_string(&diff_json(&report)))
+    } else {
+        render_diff(&report)
+    };
+    io::write_stdout(&rendered);
+    finish_quiet(
+        &mut state,
+        &format!("ok: {} change(s) between machines", report.total_changes()),
+    )
+}
+
 fn run_doctor(json: bool) -> u8 {
     let mut state = SessionState::Idle;
     if step(&mut state, SessionEvent::Finish).is_err() {
@@ -597,6 +682,12 @@ pub fn run(command: Command) -> u8 {
         }
         Command::Inventory => run_inventory(),
         Command::Doctor { json } => run_doctor(json),
+        Command::Fmt {
+            machine,
+            out,
+            check,
+        } => run_fmt(&machine, out.as_deref(), check),
+        Command::Diff { left, right, json } => run_diff(&left, &right, json),
         Command::Check { machine, json } => run_check(&machine, json),
         Command::Replay { machine, events, out } => run_replay(&machine, &events, out.as_deref()),
         Command::Golden {

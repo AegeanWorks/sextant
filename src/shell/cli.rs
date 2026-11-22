@@ -6,6 +6,8 @@ pub enum Command {
     Version,
     Inventory,
     Doctor { json: bool },
+    Fmt { machine: String, out: Option<String>, check: bool },
+    Diff { left: String, right: String, json: bool },
     Check { machine: String, json: bool },
     Replay { machine: String, events: String, out: Option<String> },
     Golden { machine: String, events: String, golden: String, update: bool },
@@ -42,6 +44,8 @@ pub fn usage_text() -> String {
         "  sextant demo --scripted [--seed N]",
         "  sextant inventory",
         "  sextant doctor [--json]",
+        "  sextant fmt <machine.sex> [--check] [--out <file>]",
+        "  sextant diff <left.sex> <right.sex> [--json]",
         "  sextant --help | --version",
         "",
         "EXIT CODES",
@@ -147,6 +151,27 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
     match args[0].as_str() {
         "--help" | "-h" | "help" => Ok(Command::Help),
         "--version" | "-V" => Ok(Command::Version),
+        "fmt" => {
+            let (positional, values, switches) = split(args, &["--out"], &["--check"])?;
+            Ok(Command::Fmt {
+                machine: exactly_one(&positional, "machine")?,
+                out: flag_value(&values, "--out")?.map(str::to_string),
+                check: switches.iter().any(|flag| flag == "--check"),
+            })
+        }
+        "diff" => {
+            let (positional, _, switches) = split(args, &[], &["--json"])?;
+            if positional.len() != 2 {
+                return Err(CliError {
+                    message: "diff needs two machine files".to_string(),
+                });
+            }
+            Ok(Command::Diff {
+                left: positional[0].clone(),
+                right: positional[1].clone(),
+                json: switches.iter().any(|flag| flag == "--json"),
+            })
+        }
         "doctor" => {
             let (positional, _, switches) = split(args, &[], &["--json"])?;
             if !positional.is_empty() {
