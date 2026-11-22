@@ -21,6 +21,7 @@ treated as a constraint on every source file, not as a style preference.
 - `minimize.rs` — deterministic 1-minimal reduction of a failing script, driven by its own `MinimizerState` transition table.
 - `graph.rs` — DOT and Mermaid export of the machine.
 - `equivalence.rs` — bounded comparison of observable outcomes across event sequences.
+- `fuzz.rs` — reproducible seed-range failure search built on the pure PRNG and replay.
 - `error.rs` — `Error` and `Finding` with pure message formatting.
 
 `src/shell/` is the imperative shell: `cli.rs` parses arguments, `run.rs` sequences
@@ -77,6 +78,8 @@ the test enumerates all 3×4 pairs. This is the third explicit state machine.
 - **Equivalence ignores labels.** Comparing state names would reject a harmless rename.
   Comparing step counts, final environments and failure categories captures what a
   caller can observe while leaving internal structure free to change.
+- **Fuzzing is seeded, not random.** The same seed range always yields the same failures,
+  and each failing script can be reduced further by the independent `minimize` function.
 - **The edge can stay dumb.** Because core results are data, the shell only reads text,
   calls a pure function and writes text. There is no business logic in `io.rs`.
 

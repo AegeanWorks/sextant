@@ -49,6 +49,12 @@ pub enum Finding {
     UndeclaredState { state: String, context: String },
     UndeclaredEvent { event: String, context: String },
     AmbiguousTransition { state: String, event: String },
+    ShadowedTransition {
+        state: String,
+        event: String,
+        shadowed: usize,
+        by: usize,
+    },
     UnreachableState(String),
     DeadEndState(String),
 }
@@ -66,6 +72,18 @@ impl Finding {
             Self::AmbiguousTransition { state, event } => format!(
                 "transition ('{}', '{}') has two identically guarded definitions",
                 state, event
+            ),
+            Self::ShadowedTransition {
+                state,
+                event,
+                shadowed,
+                by,
+            } => format!(
+                "transition {} ('{}', '{}') is shadowed by earlier transition {}",
+                shadowed + 1,
+                state,
+                event,
+                by + 1
             ),
             Self::UnreachableState(name) => format!("state '{}' is unreachable from the initial state", name),
             Self::DeadEndState(name) => format!("state '{}' has no outgoing transitions", name),

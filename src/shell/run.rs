@@ -6,10 +6,10 @@ use std::path::Path;
 
 use crate::core::engine::explore;
 use crate::core::{
-    coverage, diff_traces, equivalent, generate_events, minimize, parse_events,
+    coverage, diff_traces, equivalent, fuzz, generate_events, minimize, parse_events,
     parse_graph_format, parse_machine, replay, render_coverage, render_equivalence,
-    render_findings, render_graph, render_minimize, render_trace, verify, Event, Machine,
-    RuleType,
+    render_findings, render_fuzz, render_graph, render_minimize, render_trace, verify, Event,
+    Machine, RuleType,
 };
 
 use super::cli::Command;
@@ -274,6 +274,41 @@ fn run_explore(machine_path: &str, depth: usize) -> u8 {
     1
 }
 
+fn run_fuzz(
+    machine_path: &str,
+    seeds: usize,
+    count: usize,
+    invariant: Option<&str>,
+    out_path: Option<&str>,
+) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let result = fuzz(&machine, seeds, count, invariant);
+    let rendered = render_fuzz(&result);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    if result.failures == 0 {
+        finish_quiet(
+            &mut state,
+            &format!("ok: no failures across {} deterministic seed(s)", seeds),
+        )
+    } else {
+        io::err(&format!("error: {} seed(s) failed", result.failures));
+        fail(&mut state);
+        1
+    }
+}
+
 fn run_equiv(left_path: &str, right_path: &str, depth: usize, out_path: Option<&str>) -> u8 {
     let mut state = SessionState::Idle;
     let left = match load_machine(left_path, &mut state) {
@@ -521,6 +556,13 @@ pub fn run(command: Command) -> u8 {
             depth,
             out,
         } => run_equiv(&left, &right, depth, out.as_deref()),
+        Command::Fuzz {
+            machine,
+            seeds,
+            count,
+            invariant,
+            out,
+        } => run_fuzz(&machine, seeds, count, invariant.as_deref(), out.as_deref()),
         Command::Coverage { machine, events, out } => {
             run_coverage(&machine, &events, out.as_deref())
         }

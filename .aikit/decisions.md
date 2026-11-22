@@ -32,3 +32,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: Invariants express conditions on the environment but cannot say that a state is reachable or that an event is ever emitted; and a refactor that renames states had no mechanical way to prove behaviour unchanged. Both questions are properties of the explored configuration space and can stay pure.
 - **Decision**: Add property declarations (reaches, avoids, emits) checked during explore, and a bounded equiv command that compares observable outcomes (accepted step count, final environment, failure category) across every event sequence up to a depth, deliberately ignoring state labels so renames are accepted.
 - **Consequences**: Machine gains a properties vector; Violation gains a rule type; explore counts invariants plus properties; a new equivalence core module and test module are added. Equivalence is bounded and reports truncation rather than claiming completeness.
+
+### ADR-004: ADR-004: Seed fuzzing and guard-shadow detection
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: Bounded exploration enumerates structured sequences, but a programmer also wants random-looking reproducible scripts that mimic real usage, and check currently misses the common mistake of a broad transition declared before a narrower one on the same event.
+- **Decision**: Add a pure uzz core that replays generated scripts over a seed range and reports deterministic failures, and extend erify with a shadowed-transition finding based on interval dominance for guarded transitions on the same (state, event).
+- **Consequences**: A new core module and test module; one new Finding variant; a new CLI command with versioned output. Dominance is deliberately limited to one-variable comparisons with literal bounds, so it is conservative and never claims shadowing for non-interval guards.

@@ -147,6 +147,33 @@ An outcome is `ok:steps=N:env={...}` for a completed replay or a failure categor
 (`err:stuck`, `err:ambiguous`, `err:invariant:<name>`). State labels are intentionally
 not compared, so renaming states is accepted. A sequence cap marks the result partial.
 
+## Fuzz reports
+
+`fuzz` replays generated scripts for seeds `0..N` with `M` events each:
+
+```
+# sextant-fuzz v1
+machine: retry
+seeds: 64
+events-per-seed: 12
+failures: 3
+  - seed=7 reason=invariant:tries_bound events=START,TICK,...
+```
+
+Failures are listed in seed order and capped at 20 displayed cases while the total count
+remains exact. With `--invariant NAME`, only violations of that invariant count; without
+it, `stuck` and `ambiguous` replays count too. A reported seed is reproducible and can be
+turned into a short reproducer by writing its events to a script and running `minimize`.
+
+## Shadowed guards
+
+`check` reports `ShadowedTransition` when two guarded transitions on the same `(state,
+event)` have single-variable literal-bound intervals where the earlier guard contains the
+later one — for example `when tries <= 5` declared before `when tries <= 2`. The later
+transition can never be the only enabled one. The analysis is deliberately conservative:
+`!=`, comparisons between two variables, and mixed expressions are not modelled and
+never produce a finding.
+
 ## Error semantics
 
 - `check` is structural: it reports undeclared states/events, identical guards,

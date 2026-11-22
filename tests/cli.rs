@@ -283,6 +283,41 @@ fn equiv_accepts_renamed_states_and_detects_a_tighter_invariant() {
 }
 
 #[test]
+fn fuzz_reports_failing_seeds_through_the_cli() {
+    let fixture = Fixture::new("fuzz");
+    let machine = fixture.write("strict.sex", include_str!("../examples/strict.sex"));
+    let (code, stdout, stderr) = run(&[
+        "fuzz",
+        as_text(&machine),
+        "--seeds",
+        "64",
+        "--count",
+        "12",
+        "--invariant",
+        "tries_bound",
+    ]);
+    assert_eq!(code, 1);
+    assert!(stdout.contains("# sextant-fuzz v1"));
+    assert!(stdout.contains("seeds: 64"));
+    assert!(stderr.contains("seed(s) failed"));
+}
+
+#[test]
+fn check_flags_a_shadowed_guard() {
+    let fixture = Fixture::new("shadow");
+    let machine = fixture.write(
+        "shadow.sex",
+        "machine shadow\ninitial idle\nstate idle\nstate done\nevent GO\n\
+         transition idle GO when tries <= 5 -> done\n\
+         transition idle GO when tries <= 2 -> done\n",
+    );
+    let (code, stdout, stderr) = run(&["check", as_text(&machine)]);
+    assert_eq!(code, 1);
+    assert!(stdout.is_empty());
+    assert!(stderr.contains("shadowed by earlier transition"));
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

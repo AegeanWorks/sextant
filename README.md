@@ -25,6 +25,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- minimize examples/strict.sex examples/failing.events --invariant tries_bound
   cargo run --quiet -- graph examples/retry.sex --format mermaid
   cargo run --quiet -- equiv examples/retry.sex examples/retry_renamed.sex
+  cargo run --quiet -- fuzz examples/strict.sex --seeds 64 --invariant tries_bound
   ```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
@@ -48,6 +49,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 | `minimize <machine.sex> <events.sex> [--invariant NAME]` | Reduce a failing script to a 1-minimal reproducer; with `--invariant`, only that violation counts as failure. |
 | `graph <machine.sex> [--format dot\|mermaid]` | Export the machine as a reviewable DOT or Mermaid state diagram. |
 | `equiv <left.sex> <right.sex> [--depth N]` | Compare observable behaviour up to a depth; state renames do not count as differences. |
+| `fuzz <machine.sex> [--seeds N] [--count M] [--invariant NAME]` | Replay generated scripts over a seed range; report reproducible failures that `minimize` can shrink. |
 | `generate <machine.sex> --seed N [--count M]` | Emit a reproducible event script from a pure seeded PRNG (no clock, no `rand` crate). |
 | `demo --scripted [--seed N]` | Deterministic scripted drive (`SEED:` / `WORLD-DELTA:` / `OK:`), the Rust replacement for the AIKit Python starter. |
 | `inventory` | Machine-readable `kind|name|locator` inventory consumed by AIKit's compat gate. |
@@ -149,6 +151,7 @@ sextant/
 │   │   ├── minimize.rs       <- 1-minimal reproducer with an explicit state machine
 │   │   ├── graph.rs          <- DOT and Mermaid rendering
 │   │   ├── equivalence.rs    <- bounded, state-label-independent comparison
+│   │   ├── fuzz.rs           <- reproducible seed-range failure search
 │   │   └── error.rs          <- pure error/finding types
 │   └── shell/                <- imperative shell
 │       ├── mod.rs            <- module exports
@@ -158,9 +161,10 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 11 pure-core tests
-│   ├── cli.rs                <- 15 end-to-end process tests
+│   ├── cli.rs                <- 17 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
+│   ├── fuzz.rs               <- 5 fuzz/shadowing tests
 │   └── architecture.rs       <- 3 architectural audit tests
 ├── examples/
 │   ├── retry.sex             <- example machine

@@ -3,6 +3,7 @@ pub mod engine;
 pub mod equivalence;
 pub mod error;
 pub mod format;
+pub mod fuzz;
 pub mod graph;
 pub mod minimize;
 pub mod model;
@@ -19,6 +20,7 @@ pub use format::{
     diff_traces, format_condition, format_effect, format_env, render_findings, render_trace,
     TraceDiff,
 };
+pub use fuzz::{fuzz, render_fuzz, FuzzCase, FuzzResult};
 pub use graph::{format_name as graph_format_name, parse_graph_format, render_graph, GraphFormat};
 pub use minimize::{
     fails, minimizer_transition, minimize, render_minimize, IllegalMinimizerTransition,

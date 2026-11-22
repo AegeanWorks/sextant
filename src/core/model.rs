@@ -62,6 +62,17 @@ impl Comparison {
         }
     }
 
+    pub fn invert(self) -> Self {
+        match self {
+            Self::Lt => Self::Gt,
+            Self::Le => Self::Ge,
+            Self::Gt => Self::Lt,
+            Self::Ge => Self::Le,
+            Self::Eq => Self::Eq,
+            Self::Ne => Self::Ne,
+        }
+    }
+
     pub fn test(self, left: i64, right: i64) -> bool {
         match self {
             Self::Lt => left < right,

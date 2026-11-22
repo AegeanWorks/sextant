@@ -9,7 +9,9 @@ use std::collections::{BTreeSet, VecDeque};
 
 use crate::core::error::{Error, Finding};
 use crate::core::format::format_env;
-use crate::core::model::{Env, Event, Machine, PropertyKind, State, Trace, TraceStep};
+use crate::core::model::{
+    Comparison, Condition, Env, Event, Machine, Operand, PropertyKind, State, Trace, TraceStep,
+};
 
 /// A deterministic 64-bit PRNG (xorshift64*). It is a pure value: the seed is
 /// the only source of variation, so generated scripts replay exactly.
@@ -130,6 +132,49 @@ pub fn replay(machine: &Machine, events: &[Event]) -> Result<Trace, Error> {
     })
 }
 
+/// `(variable, inclusive_low, inclusive_high)`; `None` bounds are unbounded.
+type Interval = (String, Option<i64>, Option<i64>);
+
+/// Conservative guard interval: only one variable compared with a literal.
+/// `!=` and variable-to-variable comparisons are deliberately not modelled.
+fn guard_interval(condition: &Condition) -> Option<Interval> {
+    let (name, comparison, bound) = match (&condition.left, &condition.right) {
+        (Operand::Variable(name), Operand::Literal(value)) => {
+            (name.clone(), condition.comparison, *value)
+        }
+        (Operand::Literal(value), Operand::Variable(name)) => {
+            (name.clone(), condition.comparison.invert(), *value)
+        }
+        _ => return None,
+    };
+    let (low, high) = match comparison {
+        Comparison::Lt => (None, Some(bound.saturating_sub(1))),
+        Comparison::Le => (None, Some(bound)),
+        Comparison::Gt => (Some(bound.saturating_add(1)), None),
+        Comparison::Ge => (Some(bound), None),
+        Comparison::Eq => (Some(bound), Some(bound)),
+        Comparison::Ne => return None,
+    };
+    Some((name, low, high))
+}
+
+fn contains(outer: &Interval, inner: &Interval) -> bool {
+    if outer.0 != inner.0 {
+        return false;
+    }
+    let low_ok = match (outer.1, inner.1) {
+        (None, _) => true,
+        (Some(a), Some(b)) => a <= b,
+        (Some(_), None) => false,
+    };
+    let high_ok = match (outer.2, inner.2) {
+        (None, _) => true,
+        (Some(a), Some(b)) => a >= b,
+        (Some(_), None) => false,
+    };
+    low_ok && high_ok
+}
+
 /// Static well-formedness checks. An empty result means the machine is sound.
 pub fn verify(machine: &Machine) -> Vec<Finding> {
     let mut findings = Vec::new();
@@ -177,6 +222,31 @@ pub fn verify(machine: &Machine) -> Vec<Finding> {
                         event: event.0.clone(),
                         context,
                     });
+                }
+            }
+        }
+    }
+
+    // A broader guard declared earlier makes the narrower one unreachable.
+    for left in 0..machine.transitions.len() {
+        for right in (left + 1)..machine.transitions.len() {
+            let a = &machine.transitions[left];
+            let b = &machine.transitions[right];
+            if a.from != b.from || a.event != b.event {
+                continue;
+            }
+            if let (Some(guard_a), Some(guard_b)) = (&a.guard, &b.guard) {
+                if let (Some(interval_a), Some(interval_b)) =
+                    (guard_interval(guard_a), guard_interval(guard_b))
+                {
+                    if contains(&interval_a, &interval_b) {
+                        findings.push(Finding::ShadowedTransition {
+                            state: a.from.0.clone(),
+                            event: a.event.0.clone(),
+                            shadowed: right,
+                            by: left,
+                        });
+                    }
                 }
             }
         }

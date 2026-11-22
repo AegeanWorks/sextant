@@ -10,6 +10,7 @@ pub enum Command {
     Golden { machine: String, events: String, golden: String, update: bool },
     Explore { machine: String, depth: usize },
     Equiv { left: String, right: String, depth: usize, out: Option<String> },
+    Fuzz { machine: String, seeds: usize, count: usize, invariant: Option<String>, out: Option<String> },
     Coverage { machine: String, events: String, out: Option<String> },
     Minimize { machine: String, events: String, invariant: Option<String>, out: Option<String> },
     Graph { machine: String, format: String, out: Option<String> },
@@ -32,6 +33,7 @@ pub fn usage_text() -> String {
         "  sextant golden <machine.sex> <events.sex> <golden.txt> [--update]",
         "  sextant explore <machine.sex> [--depth N]",
         "  sextant equiv <left.sex> <right.sex> [--depth N] [--out <report.txt>]",
+        "  sextant fuzz <machine.sex> [--seeds N] [--count M] [--invariant NAME] [--out <report.txt>]",
         "  sextant coverage <machine.sex> <events.sex> [--out <report.txt>]",
         "  sextant minimize <machine.sex> <events.sex> [--invariant NAME] [--out <events.sex>]",
         "  sextant graph <machine.sex> [--format dot|mermaid] [--out <file>]",
@@ -191,6 +193,17 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
             Ok(Command::Explore {
                 machine: exactly_one(&positional, "machine")?,
                 depth: usize_value(&values, "--depth", 8)?,
+            })
+        }
+        "fuzz" => {
+            let (positional, values, _) =
+                split(args, &["--seeds", "--count", "--invariant", "--out"], &[])?;
+            Ok(Command::Fuzz {
+                machine: exactly_one(&positional, "machine")?,
+                seeds: usize_value(&values, "--seeds", 64)?,
+                count: usize_value(&values, "--count", 12)?,
+                invariant: flag_value(&values, "--invariant")?.map(str::to_string),
+                out: flag_value(&values, "--out")?.map(str::to_string),
             })
         }
         "equiv" => {
