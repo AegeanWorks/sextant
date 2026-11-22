@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-reforge-state",
+    "task_id": "sextant-brand-publish",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795337573.918511,
+    "updated_at": 1795339454.7238646,
     "owner": "opencode:sextant",
-    "lease_until": 1795344773.918511,
+    "lease_until": 1795346654.7238646,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -17,35 +17,11 @@
       }
     ],
     "completed_without_impact_assessment": true,
-    "completed_at": 1795337574.3633974,
-    "completed_head": "97de107eabfeedff2d903c7fa09b87e047286893",
-    "completed_tree": "eb7877b0e216ebee01ba93812690b65bfd37d6a2"
+    "completed_at": 1795339459.4553318,
+    "completed_head": "87893afb72fe0d3ff88ec97cbacec7cf8a96668c",
+    "completed_tree": "0ce0ae1334ec39363c287bde9cad02b9192f2eba"
   },
   "checkpoints": [
-    {
-      "task_id": "reforge:run-1",
-      "phase": "reforge stage 4",
-      "phase_num": 3,
-      "description": "Reforge stage 4: stage 4 host review reviewed; run active; coverage 24/24",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795336337.9119701,
-      "timestamp_str": "2026-11-22 11:32:17",
-      "agent": "opencode",
-      "operator_task": "sextant-v010-doc-fix"
-    },
-    {
-      "task_id": "reforge:run-1",
-      "phase": "reforge stage 5",
-      "phase_num": 3,
-      "description": "Reforge stage 5: window 14, 3 commit(s), 12 file(s) reviewed (unreviewed), 0 finding(s), 0 repaired, empty \u2014 nothing to commit",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795336481.935793,
-      "timestamp_str": "2026-11-22 11:34:41",
-      "agent": "opencode",
-      "operator_task": "sextant-v010-doc-fix"
-    },
     {
       "task_id": "reforge:run-1",
       "phase": "reforge stage 5",
@@ -277,6 +253,41 @@
       "timestamp_str": "2026-11-22 11:52:54",
       "agent": "opencode:sextant",
       "head": "97de107eabfeedff2d903c7fa09b87e047286893",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-brand-publish",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Approve and apply brand logo and social preview, then publish the project publicly with dossier sync",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795339454.7238646,
+      "timestamp_str": "2026-11-22 12:24:14",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-brand-publish",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-brand-publish' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795339459.535151,
+      "timestamp_str": "2026-11-22 12:24:19",
+      "agent": "opencode:sextant",
+      "head": "87893afb72fe0d3ff88ec97cbacec7cf8a96668c",
       "delivery": {
         "roots": [
           "."
