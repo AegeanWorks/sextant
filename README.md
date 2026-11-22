@@ -117,7 +117,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the design and
 
 ```text
 sextant/
-├── .cargo/config.toml       <- GNU target on this Windows host (MSVC linker absent)
+├── .cargo/                   <- Cargo build configuration
+│   └── config.toml           <- GNU target on this Windows host (MSVC linker absent)
 ├── .gitattributes            <- LF line endings on every platform
 ├── .gitignore                <- transient AIKit/Rust state excluded
 ├── Cargo.toml                <- zero dependencies
@@ -131,12 +132,14 @@ sextant/
 │   ├── main.rs               <- process edge: args in, exit code out
 │   ├── lib.rs
 │   ├── core/                 <- pure functional core (no I/O)
+│   │   ├── mod.rs            <- module exports
 │   │   ├── model.rs          <- State, Event, Condition, Effect, Machine, Trace
 │   │   ├── parse.rs          <- pure machine and event-script parsers
 │   │   ├── engine.rs         <- transition, replay, verify, explore, seeded PRNG
 │   │   ├── format.rs         <- deterministic trace rendering and diffing
 │   │   └── error.rs          <- pure error/finding types
 │   └── shell/                <- imperative shell
+│       ├── mod.rs            <- module exports
 │       ├── cli.rs            <- argument parsing and usage text
 │       ├── session.rs        <- explicit CLI SessionState transition table
 │       ├── io.rs             <- the only file/stdout/stderr boundary
