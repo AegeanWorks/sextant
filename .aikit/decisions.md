@@ -58,7 +58,7 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Date**: 2026-11-22
 - **Status**: Accepted
 - **Context**: Models are reviewed in diffs, but hand-written declaration order and spacing make semantic changes hard to see, and there is no way to list what changed between two machine files.
-- **Decision**: Add a pure canonical renderer used by mt (with --check for CI) and a pure structural diff of states, events, transitions, invariants, properties and the initial state. Transition identity is its rendered semantic form, so whitespace and declaration order do not create false differences.
+- **Decision**: Add a pure canonical renderer used by fmt (with --check for CI) and a pure structural diff of states, events, transitions, invariants, properties and the initial state. Transition identity is its rendered semantic form, so whitespace and declaration order do not create false differences.
 - **Consequences**: Two new core modules and CLI commands; no dependencies. Canonical output is idempotent by construction. Diff reports are versioned and can be rendered as JSON.
 
 ### ADR-008: ADR-008: Trace recovery and machine slicing
