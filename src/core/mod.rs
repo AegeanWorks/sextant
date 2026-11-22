@@ -12,6 +12,8 @@ pub mod json;
 pub mod minimize;
 pub mod model;
 pub mod parse;
+pub mod slice;
+pub mod untrace;
 
 pub use canonical::{
     canonicalize, is_canonical, parse as parse_canonical, render_machine, render_property,
@@ -42,3 +44,5 @@ pub use model::{
     PropertyKind, State, Trace, TraceStep, Transition,
 };
 pub use parse::{parse_events, parse_machine};
+pub use slice::{render_slice_report, slice, SliceResult};
+pub use untrace::{render_events, untrace};

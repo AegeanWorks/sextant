@@ -402,6 +402,34 @@ fn diff_reports_structural_changes_in_text_and_json() {
 }
 
 #[test]
+fn untrace_recovers_the_script_from_a_golden_trace() {
+    let fixture = Fixture::new("untrace");
+    let golden = fixture.write("retry.golden", include_str!("../examples/retry.golden"));
+    let (code, stdout, stderr) = run(&["untrace", as_text(&golden)]);
+    assert_eq!(code, 0, "stderr: {}", stderr);
+    assert_eq!(stdout, include_str!("../examples/retry.events"));
+}
+
+#[test]
+fn slice_emits_a_smaller_replayable_machine() {
+    let fixture = Fixture::new("slice");
+    let machine = fixture.example_machine();
+    let events = fixture.example_events();
+    let (code, stdout, stderr) = run(&["slice", as_text(&machine), as_text(&events)]);
+    assert_eq!(code, 0, "stderr: {}", stderr);
+    assert!(stdout.starts_with("machine retry_slice\n"));
+    assert!(!stdout.contains("RESET"));
+    assert!(stderr.contains("dropped-properties: 0"));
+    assert_eq!(
+        stdout.lines().filter(|line| line.starts_with("transition ")).count(),
+        3
+    );
+    // The slice ends in a terminal state with no outgoing edge, which `check`
+    // correctly reports as a dead end. It is a debugging projection, not a
+    // standalone verified model; replay equivalence is covered in tests/slice.rs.
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

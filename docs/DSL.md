@@ -174,6 +174,22 @@ transition can never be the only enabled one. The analysis is deliberately conse
 `!=`, comparisons between two variables, and mixed expressions are not modelled and
 never produce a finding.
 
+## Trace recovery and slicing
+
+`untrace` reads a versioned trace (`# sextant-trace v1`) and writes the event script that
+produced it, one event per line. It validates the header and each step's shape, reporting
+the offending line on malformed input.
+
+`slice <machine> <events>` replays the script and emits a canonical machine containing
+only the transitions that were exercised, plus the states and events they mention.
+Properties whose symbols disappear are dropped and listed in a `# sextant-slice v1`
+summary on stderr. The result replays the same script with the same steps and environment.
+
+A slice is a **debugging projection**, not a standalone verified model: its final state
+often has no outgoing edge, so `check` correctly reports a dead end and `replay` (which
+verifies first) will refuse it. Use the slice to inspect a failing path, not as a
+replacement for the original model.
+
 ## Canonical form and diff
 
 `fmt` parses a machine and re-renders it in a fixed order: machine, initial, sorted

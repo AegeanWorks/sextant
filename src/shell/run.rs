@@ -9,8 +9,9 @@ use crate::core::{
     canonicalize, check_json, coverage, diff_json, diff_traces, doctor_json, equivalent,
     explore_json, fuzz, fuzz_json, generate_events, json_to_string, machine_diff, minimize,
     parse_events, parse_graph_format, parse_machine, render_coverage, render_diff, render_doctor,
-    render_equivalence, render_findings, render_fuzz, render_graph, render_minimize, render_trace,
-    replay, self_check, verify, Event, Machine, RuleType,
+    render_equivalence, render_events, render_findings, render_fuzz, render_graph, render_machine,
+    render_minimize, render_slice_report, render_trace, replay, self_check, slice, untrace, verify,
+    Event, Machine, RuleType,
 };
 
 use super::cli::Command;
@@ -534,6 +535,74 @@ fn run_generate(machine_path: &str, seed: u64, count: usize, out_path: Option<&s
     )
 }
 
+fn run_untrace(trace_path: &str, out_path: Option<&str>) -> u8 {
+    let mut state = SessionState::Idle;
+    if step(&mut state, SessionEvent::Load).is_err() {
+        return 2;
+    }
+    let text = match io::read_text(Path::new(trace_path)) {
+        Ok(text) => text,
+        Err(error) => {
+            io::err(&format!("error: cannot read {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let events = match untrace(&text) {
+        Ok(events) => events,
+        Err(error) => {
+            io::err(&format!("error: {}: {}", trace_path, error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let rendered = render_events(&events);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    finish_quiet(
+        &mut state,
+        &format!("ok: recovered {} event(s) from the trace", events.len()),
+    )
+}
+
+fn run_slice(machine_path: &str, events_path: &str, out_path: Option<&str>) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let events = match load_events(events_path) {
+        Ok(events) => events,
+        Err(code) => {
+            fail(&mut state);
+            return code;
+        }
+    };
+    let trace = match replay(&machine, &events) {
+        Ok(trace) => trace,
+        Err(error) => {
+            io::err(&format!("error: {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let report = slice(&machine, &trace);
+    let rendered = render_machine(&report.machine);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    let summary = render_slice_report(&report);
+    io::err(&summary);
+    finish_quiet(&mut state, "ok: sliced machine emitted")
+}
+
 fn run_fmt(machine_path: &str, out_path: Option<&str>, check: bool) -> u8 {
     let mut state = SessionState::Idle;
     if step(&mut state, SessionEvent::Load).is_err() {
@@ -693,6 +762,8 @@ pub fn run(command: Command) -> u8 {
             check,
         } => run_fmt(&machine, out.as_deref(), check),
         Command::Diff { left, right, json } => run_diff(&left, &right, json),
+        Command::Untrace { trace, out } => run_untrace(&trace, out.as_deref()),
+        Command::Slice { machine, events, out } => run_slice(&machine, &events, out.as_deref()),
         Command::Check { machine, json } => run_check(&machine, json),
         Command::Replay { machine, events, out } => run_replay(&machine, &events, out.as_deref()),
         Command::Golden {

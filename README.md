@@ -29,6 +29,7 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- doctor
   cargo run --quiet -- fmt examples/retry.sex              # print the canonical form
   cargo run --quiet -- diff examples/retry.sex examples/retry_renamed.sex
+  cargo run --quiet -- untrace examples/retry.golden
   ```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
@@ -59,6 +60,8 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 | `doctor [--json]` | File-independent self-check of every core engine; exit 0 means all checks passed. |
 | `fmt <machine.sex> [--check] [--out F]` | Canonical, idempotent formatter; `--check` fails in CI when a file is not canonical. |
 | `diff <left.sex> <right.sex> [--json]` | Structural diff of states, events, transitions, invariants and properties. |
+| `untrace <trace.txt>` | Recover the event script from a versioned trace or golden file. |
+| `slice <machine.sex> <events.sex>` | Emit a minimal machine containing only the transitions the script exercised. |
 
 Exit codes: `0` success, `1` verification or behaviour failure, `2` usage error.
 `replay` and `generate` write only machine-readable data to stdout; status goes to stderr
@@ -163,6 +166,8 @@ sextant/
 │   │   ├── equivalence.rs    <- bounded, state-label-independent comparison
 │   │   ├── fuzz.rs           <- reproducible seed-range failure search
 │   │   ├── json.rs           <- std-only deterministic JSON value and serializer
+│   │   ├── slice.rs          <- project a machine onto the transitions a trace used
+│   │   ├── untrace.rs        <- recover an event script from a versioned trace
 │   │   └── error.rs          <- pure error/finding types
 │   └── shell/                <- imperative shell
 │       ├── mod.rs            <- module exports
@@ -172,13 +177,14 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 11 pure-core tests
-│   ├── cli.rs                <- 21 end-to-end process tests
+│   ├── cli.rs                <- 23 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
 │   ├── fuzz.rs               <- 5 fuzz/shadowing tests
 │   ├── json.rs               <- 4 JSON serializer tests
 │   ├── doctor.rs             <- 2 self-check determinism tests
 │   ├── format_diff.rs        <- 4 formatter/diff tests
+│   ├── slice.rs              <- 4 trace-recovery/slice tests
 │   └── architecture.rs       <- 3 architectural audit tests
 ├── examples/
 │   ├── retry.sex             <- example machine

@@ -8,6 +8,8 @@ pub enum Command {
     Doctor { json: bool },
     Fmt { machine: String, out: Option<String>, check: bool },
     Diff { left: String, right: String, json: bool },
+    Untrace { trace: String, out: Option<String> },
+    Slice { machine: String, events: String, out: Option<String> },
     Check { machine: String, json: bool },
     Replay { machine: String, events: String, out: Option<String> },
     Golden { machine: String, events: String, golden: String, update: bool },
@@ -46,6 +48,8 @@ pub fn usage_text() -> String {
         "  sextant doctor [--json]",
         "  sextant fmt <machine.sex> [--check] [--out <file>]",
         "  sextant diff <left.sex> <right.sex> [--json]",
+        "  sextant untrace <trace.txt> [--out <events.sex>]",
+        "  sextant slice <machine.sex> <events.sex> [--out <machine.sex>]",
         "  sextant --help | --version",
         "",
         "EXIT CODES",
@@ -151,6 +155,26 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
     match args[0].as_str() {
         "--help" | "-h" | "help" => Ok(Command::Help),
         "--version" | "-V" => Ok(Command::Version),
+        "untrace" => {
+            let (positional, values, _) = split(args, &["--out"], &[])?;
+            Ok(Command::Untrace {
+                trace: exactly_one(&positional, "trace")?,
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
+        "slice" => {
+            let (positional, values, _) = split(args, &["--out"], &[])?;
+            if positional.len() != 2 {
+                return Err(CliError {
+                    message: "slice needs a machine file and an event script".to_string(),
+                });
+            }
+            Ok(Command::Slice {
+                machine: positional[0].clone(),
+                events: positional[1].clone(),
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
         "fmt" => {
             let (positional, values, switches) = split(args, &["--out"], &["--check"])?;
             Ok(Command::Fmt {

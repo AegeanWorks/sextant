@@ -60,3 +60,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: Models are reviewed in diffs, but hand-written declaration order and spacing make semantic changes hard to see, and there is no way to list what changed between two machine files.
 - **Decision**: Add a pure canonical renderer used by mt (with --check for CI) and a pure structural diff of states, events, transitions, invariants, properties and the initial state. Transition identity is its rendered semantic form, so whitespace and declaration order do not create false differences.
 - **Consequences**: Two new core modules and CLI commands; no dependencies. Canonical output is idempotent by construction. Diff reports are versioned and can be rendered as JSON.
+
+### ADR-008: ADR-008: Trace recovery and machine slicing
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: A golden trace records what happened, but turning it back into an event script or a reduced model still requires manual transcription. Both are pure transformations of data Sextant already produces.
+- **Decision**: Add untrace to recover the event script from a versioned trace, and slice to project a machine down to the transitions actually exercised by a script, dropping unused states/events and properties whose symbols disappear. Both render through existing pure functions.
+- **Consequences**: Two new core modules and CLI commands; the sliced machine is canonical and remains replayable with the same script. Dropped properties are reported explicitly so a user never assumes a removed rule was preserved.
