@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v09-terminal",
+    "task_id": "sextant-v010-diagnostics",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795331487.0103295,
+    "updated_at": 1795332547.4133706,
     "owner": "opencode:sextant",
-    "lease_until": 1795338687.0103295,
+    "lease_until": 1795339747.4133706,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,121 +16,11 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795331490.3800366,
-    "completed_head": "4940ec205dae06d683bb874438f862f5eaeb2495",
-    "completed_tree": "8ace7abeef8c80bb58f08aa99f4e3b810294e32c"
+    "completed_at": 1795332547.9150782,
+    "completed_head": "62380449d84f4a8c4785362f446c111b90385c94",
+    "completed_tree": "9677ff17f779d99880496f2ed15682430fc53cb6"
   },
   "checkpoints": [
-    {
-      "task_id": "sextant-v07-format-diff",
-      "phase": "phase 2",
-      "phase_num": 2,
-      "description": "[1/5] Plan v0.7: a pure canonical machine formatter with a CI check mode and a structural machine diff",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795329934.320048,
-      "timestamp_str": "2026-11-22 09:45:34",
-      "agent": "opencode:sextant",
-      "impact_assessment": {
-        "why": "Model files drift in formatting, which hides real changes in review; a canonical form and a semantic diff make model evolution auditable.",
-        "benefits": "Idempotent formatting, a --check gate for CI, and a precise list of added/removed model elements between revisions.",
-        "risks": "contract: canonical form and diff keys become public; dependency: none; concurrency: none; state: parse errors must surface with line numbers.",
-        "mitigation": "Derive both features from the existing pure parser, test idempotence and semantic identity explicitly, and version both output formats."
-      },
-      "plan_digest": "c1c8e5cb4dd3d545aeab5ab015dbc968a3466ff048ea1fd06147e7635514dce0",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v07-format-diff",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[2/5] Add pure canonical rendering and structural machine diff to the core",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795330440.8928342,
-      "timestamp_str": "2026-11-22 09:54:00",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v07-format-diff",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[3/5] Wire fmt (with --check) and diff (with --json) into the shell",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795330441.323411,
-      "timestamp_str": "2026-11-22 09:54:01",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v07-format-diff",
-      "phase": "phase 3",
-      "phase_num": 3,
-      "description": "[4/5] Add formatter/diff tests, ADR-007 and README/DSL/AUDIT updates",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795330441.7613761,
-      "timestamp_str": "2026-11-22 09:54:01",
-      "agent": "opencode:sextant",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v07-format-diff",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "[5/5] Phase 4 passed: 62 Rust tests green and all five project gates passed",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795330442.2127283,
-      "timestamp_str": "2026-11-22 09:54:02",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v07-format-diff",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v07-format-diff' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795330442.7777839,
-      "timestamp_str": "2026-11-22 09:54:02",
-      "agent": "opencode:sextant",
-      "head": "7297135fae1b7c28ee7865a3bbf579b1619417d5",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
     {
       "task_id": "sextant-v07-fmt-polish",
       "phase": "phase 4",
@@ -379,6 +269,116 @@
       "timestamp_str": "2026-11-22 10:11:30",
       "agent": "opencode:sextant",
       "head": "4940ec205dae06d683bb874438f862f5eaeb2495",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v010-diagnostics",
+      "phase": "phase 2",
+      "phase_num": 2,
+      "description": "[1/5] Plan v0.10: explain stuck events with actual guard values and list reachable configurations with shortest paths",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795332284.0256388,
+      "timestamp_str": "2026-11-22 10:24:44",
+      "agent": "opencode:sextant",
+      "impact_assessment": {
+        "why": "A stuck event currently reports only the symptom; evaluating guards against the replayed environment gives the cause, and a reachable map shows the explored state space.",
+        "benefits": "Faster model debugging and an inspectable view of exploration, both derived from the single pure transition selector.",
+        "risks": "contract: two versioned output formats; dependency: none; concurrency: none; state: replay of the prefix must be exact or the explanation is misleading.",
+        "mitigation": "Derive the environment by replaying the prefix, reuse choose_transition, and test both enabled and disabled guard cases with determinism checks."
+      },
+      "plan_digest": "4217b3aa3fd0a2bfd7865785a97e4991fac81c97d95741afbcbe313120c7b61f",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v010-diagnostics",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[2/5] Add pure guard evaluation with actual values and a BFS reachable-state map",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795332545.8690913,
+      "timestamp_str": "2026-11-22 10:29:05",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v010-diagnostics",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[3/5] Wire explain and reachable into the shell with versioned reports and pipe-safe output",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795332546.3700542,
+      "timestamp_str": "2026-11-22 10:29:06",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v010-diagnostics",
+      "phase": "phase 3",
+      "phase_num": 3,
+      "description": "[4/5] Add diagnostics tests, ADR-010 and README/DSL/AUDIT documentation",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795332546.9473321,
+      "timestamp_str": "2026-11-22 10:29:06",
+      "agent": "opencode:sextant",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v010-diagnostics",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "[5/5] Phase 4 passed: 74 Rust tests green and all five project gates passed",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795332547.4133706,
+      "timestamp_str": "2026-11-22 10:29:07",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v010-diagnostics",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v010-diagnostics' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795332547.9810867,
+      "timestamp_str": "2026-11-22 10:29:07",
+      "agent": "opencode:sextant",
+      "head": "62380449d84f4a8c4785362f446c111b90385c94",
       "delivery": {
         "roots": [
           "."
