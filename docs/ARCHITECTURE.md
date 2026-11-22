@@ -20,6 +20,7 @@ treated as a constraint on every source file, not as a style preference.
 - `coverage.rs` — derives state/event/transition coverage from a trace and renders a versioned report.
 - `minimize.rs` — deterministic 1-minimal reduction of a failing script, driven by its own `MinimizerState` transition table.
 - `graph.rs` — DOT and Mermaid export of the machine.
+- `equivalence.rs` — bounded comparison of observable outcomes across event sequences.
 - `error.rs` — `Error` and `Finding` with pure message formatting.
 
 `src/shell/` is the imperative shell: `cli.rs` parses arguments, `run.rs` sequences
@@ -70,8 +71,12 @@ the test enumerates all 3×4 pairs. This is the third explicit state machine.
   every run and machine. Sorted maps, ordered transitions, no clock and a pure PRNG make
   that true by construction.
 - **Verification is separable.** Static structure (`verify`), bounded dynamics
-  (`explore`) and a concrete run (`replay`) are three different questions. Keeping them
-  as separate pure functions lets the shell choose which one a command needs.
+  (`explore`, including properties), a concrete run (`replay`) and machine comparison
+  (`equivalent`) are different questions. Keeping them as separate pure functions lets
+  the shell choose which one a command needs.
+- **Equivalence ignores labels.** Comparing state names would reject a harmless rename.
+  Comparing step counts, final environments and failure categories captures what a
+  caller can observe while leaving internal structure free to change.
 - **The edge can stay dumb.** Because core results are data, the shell only reads text,
   calls a pure function and writes text. There is no business logic in `io.rs`.
 
@@ -90,6 +95,9 @@ the test enumerates all 3×4 pairs. This is the third explicit state machine.
   The order is fixed, so results are reproducible.
 - `coverage` counts each transition once even when exercised repeatedly; it answers "was
   this edge reached?", not "how often?".
+- `equiv` is bounded by depth and a 100,000-sequence cap; passing means "no difference
+  found within the bound", never a proof for all inputs. It compares observable outcomes,
+  not internal state labels or guard text.
 - No third-party crates. The only build prerequisite is a Rust toolchain with a working
   linker. On this Windows host the project follows `projects/keystone/.cargo/config.toml`
   and selects `x86_64-pc-windows-gnu`.

@@ -144,6 +144,19 @@ pub struct Invariant {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub enum PropertyKind {
+    Reaches(State),
+    Avoids(State),
+    Emits(Event),
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Property {
+    pub name: String,
+    pub kind: PropertyKind,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Machine {
     pub name: String,
     pub initial: State,
@@ -151,6 +164,7 @@ pub struct Machine {
     pub declared_events: Vec<Event>,
     pub transitions: Vec<Transition>,
     pub invariants: Vec<Invariant>,
+    pub properties: Vec<Property>,
 }
 
 impl Machine {

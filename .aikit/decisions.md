@@ -25,3 +25,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: v0.1 proves and replays a machine, but a programmer still has three unanswered questions: which transitions did my event script actually exercise, what is the smallest input that still breaks the model, and what does the machine look like? These are pure functions of (machine, events) and fit the existing functional-core boundary.
 - **Decision**: Add three commands implemented as pure core functions: coverage (transition/state/event coverage from a trace), minimize (deterministic 1-minimal reduction of a failing script, driven by an explicit MinimizerState machine), and graph (DOT/Mermaid rendering). Keep all I/O in shell::io and reuse the existing CLI session lifecycle.
 - **Consequences**: Three new core modules and one test module; README tree must list them before the gate runs; the architecture test's core-file count increases. No new dependencies. Deterministic output keeps golden-style comparison possible.
+
+### ADR-003: ADR-003: Behavioural properties and bounded equivalence
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: Invariants express conditions on the environment but cannot say that a state is reachable or that an event is ever emitted; and a refactor that renames states had no mechanical way to prove behaviour unchanged. Both questions are properties of the explored configuration space and can stay pure.
+- **Decision**: Add property declarations (reaches, avoids, emits) checked during explore, and a bounded equiv command that compares observable outcomes (accepted step count, final environment, failure category) across every event sequence up to a depth, deliberately ignoring state labels so renames are accepted.
+- **Consequences**: Machine gains a properties vector; Violation gains a rule type; explore counts invariants plus properties; a new equivalence core module and test module are added. Equivalence is bounded and reports truncation rather than claiming completeness.

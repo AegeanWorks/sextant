@@ -1,5 +1,6 @@
 pub mod coverage;
 pub mod engine;
+pub mod equivalence;
 pub mod error;
 pub mod format;
 pub mod graph;
@@ -9,8 +10,10 @@ pub mod parse;
 
 pub use coverage::{coverage, percent, render_coverage, Coverage};
 pub use engine::{
-    choose_transition, explore, generate_events, replay, verify, ExploreResult, Rng, Violation,
+    choose_transition, explore, generate_events, replay, verify, ExploreResult, Rng, RuleType,
+    Violation,
 };
+pub use equivalence::{equivalent, render_equivalence, EquivalenceDifference, EquivalenceResult};
 pub use error::{Error, Finding};
 pub use format::{
     diff_traces, format_condition, format_effect, format_env, render_findings, render_trace,
@@ -22,7 +25,7 @@ pub use minimize::{
     MinimizeResult, MinimizerEvent, MinimizerState, TRANSITIONS as MINIMIZER_TRANSITIONS,
 };
 pub use model::{
-    Comparison, Condition, Effect, Env, Event, Invariant, Machine, Operand, State, Trace,
-    TraceStep, Transition,
+    Comparison, Condition, Effect, Env, Event, Invariant, Machine, Operand, Property,
+    PropertyKind, State, Trace, TraceStep, Transition,
 };
 pub use parse::{parse_events, parse_machine};

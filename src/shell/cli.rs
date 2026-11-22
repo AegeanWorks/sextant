@@ -9,6 +9,7 @@ pub enum Command {
     Replay { machine: String, events: String, out: Option<String> },
     Golden { machine: String, events: String, golden: String, update: bool },
     Explore { machine: String, depth: usize },
+    Equiv { left: String, right: String, depth: usize, out: Option<String> },
     Coverage { machine: String, events: String, out: Option<String> },
     Minimize { machine: String, events: String, invariant: Option<String>, out: Option<String> },
     Graph { machine: String, format: String, out: Option<String> },
@@ -30,6 +31,7 @@ pub fn usage_text() -> String {
         "  sextant replay <machine.sex> <events.sex> [--out <trace.txt>]",
         "  sextant golden <machine.sex> <events.sex> <golden.txt> [--update]",
         "  sextant explore <machine.sex> [--depth N]",
+        "  sextant equiv <left.sex> <right.sex> [--depth N] [--out <report.txt>]",
         "  sextant coverage <machine.sex> <events.sex> [--out <report.txt>]",
         "  sextant minimize <machine.sex> <events.sex> [--invariant NAME] [--out <events.sex>]",
         "  sextant graph <machine.sex> [--format dot|mermaid] [--out <file>]",
@@ -189,6 +191,20 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
             Ok(Command::Explore {
                 machine: exactly_one(&positional, "machine")?,
                 depth: usize_value(&values, "--depth", 8)?,
+            })
+        }
+        "equiv" => {
+            let (positional, values, _) = split(args, &["--depth", "--out"], &[])?;
+            if positional.len() != 2 {
+                return Err(CliError {
+                    message: "equiv needs two machine files".to_string(),
+                });
+            }
+            Ok(Command::Equiv {
+                left: positional[0].clone(),
+                right: positional[1].clone(),
+                depth: usize_value(&values, "--depth", 4)?,
+                out: flag_value(&values, "--out")?.map(str::to_string),
             })
         }
         "coverage" => {

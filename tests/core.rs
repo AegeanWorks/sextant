@@ -105,7 +105,8 @@ fn exploration_finds_invariant_violations_deterministically() {
     let second = explore(&strict, 6, 10_000);
     assert_eq!(first, second);
     assert!(!first.violations.is_empty());
-    assert_eq!(first.violations[0].invariant, "tries_bound");
+    assert_eq!(first.violations[0].rule, "tries_bound");
+    assert_eq!(first.rules_checked, 1);
 
     let safe = explore(&machine(), 6, 10_000);
     assert!(safe.violations.is_empty());

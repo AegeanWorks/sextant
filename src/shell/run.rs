@@ -6,9 +6,10 @@ use std::path::Path;
 
 use crate::core::engine::explore;
 use crate::core::{
-    coverage, diff_traces, generate_events, minimize, parse_events, parse_graph_format,
-    parse_machine, replay, render_coverage, render_findings, render_graph, render_minimize,
-    render_trace, verify, Event, Machine,
+    coverage, diff_traces, equivalent, generate_events, minimize, parse_events,
+    parse_graph_format, parse_machine, replay, render_coverage, render_equivalence,
+    render_findings, render_graph, render_minimize, render_trace, verify, Event, Machine,
+    RuleType,
 };
 
 use super::cli::Command;
@@ -240,14 +241,14 @@ fn run_explore(machine_path: &str, depth: usize) -> u8 {
     }
     let result = explore(&machine, depth, MAX_EXPLORE_CONFIGURATIONS);
     io::out(&format!(
-        "explored {} configuration(s), {} transition(s) at depth {}",
-        result.configurations, result.transitions_taken, depth
+        "explored {} configuration(s), {} transition(s), {} rule(s) at depth {}",
+        result.configurations, result.transitions_taken, result.rules_checked, depth
     ));
     if result.truncated {
         io::out("warning: configuration cap reached; exploration is partial");
     }
     if result.violations.is_empty() {
-        return finish(&mut state, "ok: no invariant violations found");
+        return finish(&mut state, "ok: no rule violations found");
     }
     for violation in &result.violations {
         let path = violation
@@ -256,9 +257,14 @@ fn run_explore(machine_path: &str, depth: usize) -> u8 {
             .map(|(state, event)| format!("{}/{}", state.as_str(), event.as_str()))
             .collect::<Vec<_>>()
             .join(" -> ");
+        let kind = match violation.rule_type {
+            RuleType::Invariant => "invariant",
+            RuleType::Property => "property",
+        };
         io::err(&format!(
-            "violation: '{}' at {} [env {:?}] path {}",
-            violation.invariant,
+            "violation: {} '{}' at {} [env {:?}] path {}",
+            kind,
+            violation.rule,
             violation.state.as_str(),
             violation.env,
             path
@@ -266,6 +272,58 @@ fn run_explore(machine_path: &str, depth: usize) -> u8 {
     }
     fail(&mut state);
     1
+}
+
+fn run_equiv(left_path: &str, right_path: &str, depth: usize, out_path: Option<&str>) -> u8 {
+    let mut state = SessionState::Idle;
+    let left = match load_machine(left_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&left, &mut state) {
+        return code;
+    }
+    let right = match io::read_text(Path::new(right_path)) {
+        Ok(text) => match parse_machine(&text) {
+            Ok(machine) => machine,
+            Err(error) => {
+                io::err(&format!("error: {}: {}", right_path, error.message()));
+                fail(&mut state);
+                return 1;
+            }
+        },
+        Err(error) => {
+            io::err(&format!("error: cannot read {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    // The session is already Verified; check the second machine without a second
+    // Verify event, which the lifecycle correctly rejects.
+    let findings = verify(&right);
+    if !findings.is_empty() {
+        io::err(&render_findings(&findings));
+        fail(&mut state);
+        return 1;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let result = equivalent(&left, &right, depth, 100_000);
+    let rendered = render_equivalence(&result, &left.name, &right.name);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    if result.differences.is_empty() {
+        finish_quiet(&mut state, "ok: machines are behaviourally equivalent")
+    } else {
+        io::err(&format!(
+            "error: {} behavioural difference(s)",
+            result.differences.len()
+        ));
+        fail(&mut state);
+        1
+    }
 }
 
 fn emit_data(rendered: &str, out_path: Option<&str>, state: &mut SessionState) -> Result<(), u8> {
@@ -457,6 +515,12 @@ pub fn run(command: Command) -> u8 {
             update,
         } => run_golden(&machine, &events, &golden, update),
         Command::Explore { machine, depth } => run_explore(&machine, depth),
+        Command::Equiv {
+            left,
+            right,
+            depth,
+            out,
+        } => run_equiv(&left, &right, depth, out.as_deref()),
         Command::Coverage { machine, events, out } => {
             run_coverage(&machine, &events, out.as_deref())
         }

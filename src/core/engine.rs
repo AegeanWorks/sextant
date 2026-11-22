@@ -9,7 +9,7 @@ use std::collections::{BTreeSet, VecDeque};
 
 use crate::core::error::{Error, Finding};
 use crate::core::format::format_env;
-use crate::core::model::{Env, Event, Machine, State, Trace, TraceStep};
+use crate::core::model::{Env, Event, Machine, PropertyKind, State, Trace, TraceStep};
 
 /// A deterministic 64-bit PRNG (xorshift64*). It is a pure value: the seed is
 /// the only source of variation, so generated scripts replay exactly.
@@ -160,6 +160,28 @@ pub fn verify(machine: &Machine) -> Vec<Finding> {
         }
     }
 
+    for property in &machine.properties {
+        let context = format!("property {}", property.name);
+        match &property.kind {
+            PropertyKind::Reaches(target) | PropertyKind::Avoids(target) => {
+                if !machine.has_state(target) {
+                    findings.push(Finding::UndeclaredState {
+                        state: target.0.clone(),
+                        context,
+                    });
+                }
+            }
+            PropertyKind::Emits(event) => {
+                if !machine.has_event(event) {
+                    findings.push(Finding::UndeclaredEvent {
+                        event: event.0.clone(),
+                        context,
+                    });
+                }
+            }
+        }
+    }
+
     // Two definitions with the same (from, event, guard) always conflict.
     for left in 0..machine.transitions.len() {
         for right in (left + 1)..machine.transitions.len() {
@@ -206,10 +228,17 @@ pub fn verify(machine: &Machine) -> Vec<Finding> {
     findings
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum RuleType {
+    Invariant,
+    Property,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Violation {
     pub path: Vec<(State, Event)>,
-    pub invariant: String,
+    pub rule: String,
+    pub rule_type: RuleType,
     pub state: State,
     pub env: Env,
 }
@@ -218,6 +247,7 @@ pub struct Violation {
 pub struct ExploreResult {
     pub configurations: usize,
     pub transitions_taken: usize,
+    pub rules_checked: usize,
     pub violations: Vec<Violation>,
     pub truncated: bool,
 }
@@ -234,6 +264,8 @@ pub fn explore(machine: &Machine, max_depth: usize, max_configs: usize) -> Explo
     let mut transitions_taken = 0usize;
     let mut violations = Vec::new();
     let mut truncated = false;
+    let mut reached_states: BTreeSet<State> = BTreeSet::new();
+    let mut emitted_events: BTreeSet<Event> = BTreeSet::new();
     let mut events: Vec<Event> = machine.declared_events.clone();
     events.sort();
 
@@ -246,11 +278,13 @@ pub fn explore(machine: &Machine, max_depth: usize, max_configs: usize) -> Explo
             truncated = true;
             break;
         }
+        reached_states.insert(state.clone());
         for invariant in &machine.invariants {
             if !invariant.condition.holds(&env) {
                 violations.push(Violation {
                     path: path.clone(),
-                    invariant: invariant.name.clone(),
+                    rule: invariant.name.clone(),
+                    rule_type: RuleType::Invariant,
                     state: state.clone(),
                     env: env.clone(),
                 });
@@ -264,6 +298,7 @@ pub fn explore(machine: &Machine, max_depth: usize, max_configs: usize) -> Explo
                 choose_transition(machine, &state, &env, event)
             {
                 transitions_taken += 1;
+                emitted_events.insert(event.clone());
                 let mut next_path = path.clone();
                 next_path.push((state.clone(), event.clone()));
                 queue.push_back((transition.to.clone(), next_env, depth + 1, next_path));
@@ -271,9 +306,31 @@ pub fn explore(machine: &Machine, max_depth: usize, max_configs: usize) -> Explo
         }
     }
 
+    for property in &machine.properties {
+        let broken = match &property.kind {
+            PropertyKind::Reaches(target) => !reached_states.contains(target),
+            PropertyKind::Avoids(target) => reached_states.contains(target),
+            PropertyKind::Emits(event) => !emitted_events.contains(event),
+        };
+        if broken {
+            let target_state = match &property.kind {
+                PropertyKind::Reaches(target) | PropertyKind::Avoids(target) => target.clone(),
+                PropertyKind::Emits(_) => machine.initial.clone(),
+            };
+            violations.push(Violation {
+                path: Vec::new(),
+                rule: property.name.clone(),
+                rule_type: RuleType::Property,
+                state: target_state,
+                env: Env::new(),
+            });
+        }
+    }
+
     ExploreResult {
         configurations,
         transitions_taken,
+        rules_checked: machine.invariants.len() + machine.properties.len(),
         violations,
         truncated,
     }

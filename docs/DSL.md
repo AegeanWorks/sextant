@@ -112,6 +112,41 @@ Environments are rendered as `{name=value,name=value}` with names in sorted orde
 two runs on different machines produce identical bytes. `golden` compares line by line
 and reports the first divergence.
 
+## Behavioural properties
+
+Properties are checked by `explore`, not by `check` (which is structural only):
+
+```
+property reaches_done: reaches done
+property avoids_waiting: avoids waiting
+property emits_ok: emits OK
+```
+
+- `reaches <state>` must be visited by at least one reachable configuration.
+- `avoids <state>` must not be visited by any reachable configuration.
+- `emits <event>` must appear on at least one enabled transition during exploration.
+
+A property is a finding of type `property`, distinct from an `invariant` violation.
+Both are reported with the path that led to them where one exists.
+
+## Equivalence reports
+
+`equiv` enumerates every event sequence over the union of both alphabets up to `--depth`
+(default 4) and compares observable outcomes:
+
+```
+# sextant-equivalence v1
+left: retry
+right: retry_renamed
+depth: 4
+sequences: 341
+differences: 0
+```
+
+An outcome is `ok:steps=N:env={...}` for a completed replay or a failure category
+(`err:stuck`, `err:ambiguous`, `err:invariant:<name>`). State labels are intentionally
+not compared, so renaming states is accepted. A sequence cap marks the result partial.
+
 ## Error semantics
 
 - `check` is structural: it reports undeclared states/events, identical guards,

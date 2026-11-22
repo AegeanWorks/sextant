@@ -145,7 +145,7 @@ fn explore_reports_invariant_violations() {
     let (code, stdout, stderr) = run(&["explore", as_text(&machine), "--depth", "6"]);
     assert_eq!(code, 1);
     assert!(stdout.contains("configuration(s)"));
-    assert!(stderr.contains("violation: 'tries_bound'"));
+    assert!(stderr.contains("violation: invariant 'tries_bound'"));
 }
 
 #[test]
@@ -253,6 +253,33 @@ fn graph_renders_both_formats_through_the_cli() {
     let bad = run(&["graph", as_text(&machine), "--format", "png"]);
     assert_eq!(bad.0, 2);
     assert!(bad.2.contains("unknown graph format"));
+}
+
+#[test]
+fn explore_reports_property_violations() {
+    let fixture = Fixture::new("properties");
+    let machine = fixture.write("properties.sex", include_str!("../examples/properties.sex"));
+    let (code, stdout, stderr) = run(&["explore", as_text(&machine), "--depth", "6"]);
+    assert_eq!(code, 1);
+    assert!(stdout.contains("4 rule(s)"));
+    assert!(stderr.contains("property 'avoids_waiting'"));
+}
+
+#[test]
+fn equiv_accepts_renamed_states_and_detects_a_tighter_invariant() {
+    let fixture = Fixture::new("equiv");
+    let left = fixture.example_machine();
+    let renamed = fixture.write("renamed.sex", include_str!("../examples/retry_renamed.sex"));
+    let strict = fixture.write("strict.sex", include_str!("../examples/strict.sex"));
+
+    let same = run(&["equiv", as_text(&left), as_text(&renamed)]);
+    assert_eq!(same.0, 0, "stderr: {}", same.2);
+    assert!(same.1.contains("differences: 0"));
+
+    let different = run(&["equiv", as_text(&left), as_text(&strict)]);
+    assert_eq!(different.0, 1);
+    assert!(different.1.contains("differences:"));
+    assert!(different.2.contains("behavioural difference(s)"));
 }
 
 #[test]

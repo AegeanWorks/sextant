@@ -1,0 +1,19 @@
+# Same behaviour as retry.sex with renamed states: `equiv` should accept it.
+machine retry_renamed
+initial resting
+
+state resting
+state pending
+state finished
+
+event START
+event TICK
+event OK
+event RESET
+
+transition resting START -> pending
+transition pending TICK when tries <= 2 do tries += 1 -> pending
+transition pending OK -> finished
+transition finished RESET do tries = 0 -> resting
+
+invariant tries_bound: tries <= 3

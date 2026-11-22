@@ -15,7 +15,8 @@
 
 use crate::core::error::Error;
 use crate::core::model::{
-    Comparison, Condition, Effect, Event, Invariant, Machine, Operand, State, Transition,
+    Comparison, Condition, Effect, Event, Invariant, Machine, Operand, Property, PropertyKind,
+    State, Transition,
 };
 
 fn parse_operand(token: &str) -> Operand {
@@ -104,6 +105,7 @@ pub fn parse_machine(input: &str) -> Result<Machine, Error> {
     let mut declared_events: Vec<Event> = Vec::new();
     let mut transitions: Vec<Transition> = Vec::new();
     let mut invariants: Vec<Invariant> = Vec::new();
+    let mut properties: Vec<Property> = Vec::new();
 
     for (offset, raw) in input.lines().enumerate() {
         let line_no = offset + 1;
@@ -253,6 +255,36 @@ pub fn parse_machine(input: &str) -> Result<Machine, Error> {
                     condition,
                 });
             }
+            "property" => {
+                if tokens.len() != 4 || !tokens[1].ends_with(':') {
+                    return Err(Error::Parse {
+                        line: line_no,
+                        message: "property syntax is 'property <name>: reaches|avoids <state> | emits <event>'".to_string(),
+                    });
+                }
+                let property_name = tokens[1].trim_end_matches(':').to_string();
+                if properties.iter().any(|item| item.name == property_name) {
+                    return Err(Error::Duplicate {
+                        what: "property",
+                        name: property_name,
+                    });
+                }
+                let kind = match tokens[2] {
+                    "reaches" => PropertyKind::Reaches(State(tokens[3].to_string())),
+                    "avoids" => PropertyKind::Avoids(State(tokens[3].to_string())),
+                    "emits" => PropertyKind::Emits(Event(tokens[3].to_string())),
+                    other => {
+                        return Err(Error::Parse {
+                            line: line_no,
+                            message: format!("unknown property kind '{}'", other),
+                        });
+                    }
+                };
+                properties.push(Property {
+                    name: property_name,
+                    kind,
+                });
+            }
             other => {
                 return Err(Error::Parse {
                     line: line_no,
@@ -269,6 +301,7 @@ pub fn parse_machine(input: &str) -> Result<Machine, Error> {
         declared_events,
         transitions,
         invariants,
+        properties,
     };
     Ok(machine)
 }

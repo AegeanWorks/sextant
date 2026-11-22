@@ -1,0 +1,23 @@
+# Machine with behavioural properties checked by `explore`.
+machine retry
+initial idle
+
+state idle
+state waiting
+state done
+
+event START
+event TICK
+event OK
+event RESET
+
+transition idle START -> waiting
+transition waiting TICK when tries <= 2 do tries += 1 -> waiting
+transition waiting OK -> done
+transition done RESET do tries = 0 -> idle
+
+invariant tries_bound: tries <= 3
+
+property reaches_done: reaches done
+property avoids_waiting: avoids waiting
+property emits_ok: emits OK
