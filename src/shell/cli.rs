@@ -10,6 +10,8 @@ pub enum Command {
     Diff { left: String, right: String, json: bool },
     Untrace { trace: String, out: Option<String> },
     Slice { machine: String, events: String, out: Option<String> },
+    Explain { machine: String, prefix: String, event: String, out: Option<String> },
+    Reachable { machine: String, depth: usize, out: Option<String> },
     Check { machine: String, json: bool },
     Replay { machine: String, events: String, out: Option<String> },
     Golden { machine: String, events: String, golden: String, update: bool },
@@ -50,6 +52,8 @@ pub fn usage_text() -> String {
         "  sextant diff <left.sex> <right.sex> [--json]",
         "  sextant untrace <trace.txt> [--out <events.sex>]",
         "  sextant slice <machine.sex> <events.sex> [--out <machine.sex>]",
+        "  sextant explain <machine.sex> <prefix.events> <event> [--out <report.txt>]",
+        "  sextant reachable <machine.sex> [--depth N] [--out <map.txt>]",
         "  sextant --help | --version",
         "",
         "EXIT CODES",
@@ -155,6 +159,28 @@ pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
     match args[0].as_str() {
         "--help" | "-h" | "help" => Ok(Command::Help),
         "--version" | "-V" => Ok(Command::Version),
+        "explain" => {
+            let (positional, values, _) = split(args, &["--out"], &[])?;
+            if positional.len() != 3 {
+                return Err(CliError {
+                    message: "explain needs a machine file, a prefix script and an event name".to_string(),
+                });
+            }
+            Ok(Command::Explain {
+                machine: positional[0].clone(),
+                prefix: positional[1].clone(),
+                event: positional[2].clone(),
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
+        "reachable" => {
+            let (positional, values, _) = split(args, &["--depth", "--out"], &[])?;
+            Ok(Command::Reachable {
+                machine: exactly_one(&positional, "machine")?,
+                depth: usize_value(&values, "--depth", 8)?,
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
         "untrace" => {
             let (positional, values, _) = split(args, &["--out"], &[])?;
             Ok(Command::Untrace {

@@ -30,6 +30,8 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
   cargo run --quiet -- fmt examples/retry.sex              # print the canonical form
   cargo run --quiet -- diff examples/retry.sex examples/retry_renamed.sex
   cargo run --quiet -- untrace examples/retry.golden
+  cargo run --quiet -- explain examples/retry.sex examples/retry.events TICK
+  cargo run --quiet -- reachable examples/retry.sex --depth 4
   ```
 
 ### 🛠️ AIKit Commands (run from the AIKit folder)
@@ -62,6 +64,8 @@ Event-driven code — protocol handlers, retry loops, UI flows, embedded control
 | `diff <left.sex> <right.sex> [--json]` | Structural diff of states, events, transitions, invariants and properties. |
 | `untrace <trace.txt>` | Recover the event script from a versioned trace or golden file. |
 | `slice <machine.sex> <events.sex>` | Emit a minimal machine containing only the transitions the script exercised. |
+| `explain <machine.sex> <prefix.events> <event>` | Show every candidate transition for the next event and why its guard did or did not hold. |
+| `reachable <machine.sex> [--depth N]` | List reachable `(state, env)` configurations with shortest paths. |
 
 Exit codes: `0` success, `1` verification or behaviour failure, `2` usage error.
 `replay` and `generate` write only machine-readable data to stdout; status goes to stderr
@@ -164,8 +168,10 @@ sextant/
 │   │   ├── minimize.rs       <- 1-minimal reproducer with an explicit state machine
 │   │   ├── graph.rs          <- DOT and Mermaid rendering
 │   │   ├── equivalence.rs    <- bounded, state-label-independent comparison
+│   │   ├── explain.rs        <- guard diagnostics with actual environment values
 │   │   ├── fuzz.rs           <- reproducible seed-range failure search
 │   │   ├── json.rs           <- std-only deterministic JSON value and serializer
+│   │   ├── reachable.rs      <- deduplicated reachable configurations with shortest paths
 │   │   ├── slice.rs          <- project a machine onto the transitions a trace used
 │   │   ├── untrace.rs        <- recover an event script from a versioned trace
 │   │   └── error.rs          <- pure error/finding types
@@ -177,12 +183,13 @@ sextant/
 │       └── run.rs            <- command orchestration
 ├── tests/
 │   ├── core.rs               <- 12 pure-core tests
-│   ├── cli.rs                <- 23 end-to-end process tests
+│   ├── cli.rs                <- 24 end-to-end process tests
 │   ├── features.rs           <- 7 coverage/minimize/graph tests
 │   ├── behavior.rs           <- 5 property/equivalence tests
 │   ├── fuzz.rs               <- 5 fuzz/shadowing tests
 │   ├── json.rs               <- 4 JSON serializer tests
 │   ├── doctor.rs             <- 2 self-check determinism tests
+│   ├── diagnostics.rs        <- 4 explain/reachable tests
 │   ├── format_diff.rs        <- 4 formatter/diff tests
 │   ├── slice.rs              <- 4 trace-recovery/slice tests
 │   └── architecture.rs       <- 3 architectural audit tests

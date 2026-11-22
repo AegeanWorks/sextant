@@ -175,6 +175,18 @@ transition can never be the only enabled one. The analysis is deliberately conse
 `!=`, comparisons between two variables, and mixed expressions are not modelled and
 never produce a finding.
 
+## Diagnostics
+
+`explain <machine> <prefix> <event>` replays the prefix to obtain the current state and
+environment, then evaluates every transition declared for that `(state, event)`. Each
+candidate shows its guard with **actual values** substituted (`tries=2 <= 2`) and whether
+it is enabled. A versioned `# sextant-explain v1` report ends with the enabled count; it
+is diagnostic output and never mutates the model.
+
+`reachable <machine> [--depth N]` prints a BFS map of deduplicated `(state, env)`
+configurations with their shortest event paths in a `# sextant-reachable v1` report. A
+node cap marks the map partial instead of claiming completeness.
+
 ## Trace recovery and slicing
 
 `untrace` reads a versioned trace (`# sextant-trace v1`) and writes the event script that

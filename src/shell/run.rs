@@ -7,11 +7,12 @@ use std::path::Path;
 use crate::core::engine::explore;
 use crate::core::{
     canonicalize, check_json, coverage, diff_json, diff_traces, doctor_json, equivalent,
-    explore_json, fuzz, fuzz_json, generate_events, json_to_string, machine_diff, minimize,
-    parse_events, parse_graph_format, parse_machine, render_coverage, render_diff, render_doctor,
-    render_equivalence, render_events, render_findings, render_fuzz, render_graph, render_machine,
-    render_minimize, render_slice_report, render_trace, replay, self_check, slice, untrace, verify,
-    Event, Machine, RuleType,
+    explain, explore_json, fuzz, fuzz_json, generate_events, json_to_string, machine_diff,
+    minimize, parse_events, parse_graph_format, parse_machine, reachable, render_coverage,
+    render_diff, render_doctor, render_equivalence, render_events, render_explain,
+    render_findings, render_fuzz, render_graph, render_machine, render_minimize,
+    render_reachable, render_slice_report, render_trace, replay, self_check, slice, untrace,
+    verify, Event, Machine, RuleType,
 };
 
 use super::cli::Command;
@@ -603,6 +604,72 @@ fn run_slice(machine_path: &str, events_path: &str, out_path: Option<&str>) -> u
     finish_quiet(&mut state, "ok: sliced machine emitted")
 }
 
+fn run_explain(
+    machine_path: &str,
+    prefix_path: &str,
+    event_name: &str,
+    out_path: Option<&str>,
+) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let prefix = match load_events(prefix_path) {
+        Ok(events) => events,
+        Err(code) => {
+            fail(&mut state);
+            return code;
+        }
+    };
+    let event = Event(event_name.to_string());
+    let report = match explain(&machine, &prefix, &event) {
+        Ok(report) => report,
+        Err(error) => {
+            io::err(&format!("error: {}", error.message()));
+            fail(&mut state);
+            return 1;
+        }
+    };
+    let summary = format!(
+        "ok: {} candidate(s), {} enabled",
+        report.candidates.len(),
+        report.enabled_count()
+    );
+    let rendered = render_explain(&report);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    finish_quiet(&mut state, &summary)
+}
+
+fn run_reachable(machine_path: &str, depth: usize, out_path: Option<&str>) -> u8 {
+    let mut state = SessionState::Idle;
+    let machine = match load_machine(machine_path, &mut state) {
+        Ok(machine) => machine,
+        Err(code) => return code,
+    };
+    if let Err(code) = verify_machine(&machine, &mut state) {
+        return code;
+    }
+    if step(&mut state, SessionEvent::Replay).is_err() {
+        return 2;
+    }
+    let report = reachable(&machine, depth, 100_000);
+    let summary = format!("ok: {} configuration(s) mapped", report.nodes.len());
+    let rendered = render_reachable(&report);
+    if emit_data(&rendered, out_path, &mut state).is_err() {
+        return 1;
+    }
+    finish_quiet(&mut state, &summary)
+}
+
 fn run_fmt(machine_path: &str, out_path: Option<&str>, check: bool) -> u8 {
     let mut state = SessionState::Idle;
     if step(&mut state, SessionEvent::Load).is_err() {
@@ -764,6 +831,15 @@ pub fn run(command: Command) -> u8 {
         Command::Diff { left, right, json } => run_diff(&left, &right, json),
         Command::Untrace { trace, out } => run_untrace(&trace, out.as_deref()),
         Command::Slice { machine, events, out } => run_slice(&machine, &events, out.as_deref()),
+        Command::Explain {
+            machine,
+            prefix,
+            event,
+            out,
+        } => run_explain(&machine, &prefix, &event, out.as_deref()),
+        Command::Reachable { machine, depth, out } => {
+            run_reachable(&machine, depth, out.as_deref())
+        }
         Command::Check { machine, json } => run_check(&machine, json),
         Command::Replay { machine, events, out } => run_replay(&machine, &events, out.as_deref()),
         Command::Golden {

@@ -3,6 +3,7 @@ pub mod coverage;
 pub mod doctor;
 pub mod engine;
 pub mod equivalence;
+pub mod explain;
 pub mod error;
 pub mod format;
 pub mod fuzz;
@@ -12,6 +13,7 @@ pub mod json;
 pub mod minimize;
 pub mod model;
 pub mod parse;
+pub mod reachable;
 pub mod slice;
 pub mod untrace;
 
@@ -26,6 +28,8 @@ pub use engine::{
     Violation,
 };
 pub use equivalence::{equivalent, render_equivalence, EquivalenceDifference, EquivalenceResult};
+pub use explain::{explain, render_explain, Candidate, Explanation};
+pub use reachable::{reachable, render_reachable, ReachNode, Reachability};
 pub use error::{Error, Finding};
 pub use format::{
     diff_traces, format_condition, format_effect, format_env, render_findings, render_trace,

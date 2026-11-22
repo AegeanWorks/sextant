@@ -434,6 +434,28 @@ fn slice_emits_a_smaller_replayable_machine() {
 }
 
 #[test]
+fn explain_and_reachable_work_through_the_cli() {
+    let fixture = Fixture::new("diagnostics");
+    let machine = fixture.example_machine();
+    let prefix = fixture.write("prefix.events", "START\nTICK\nTICK\n");
+
+    let explanation = run(&[
+        "explain",
+        as_text(&machine),
+        as_text(&prefix),
+        "TICK",
+    ]);
+    assert_eq!(explanation.0, 0, "stderr: {}", explanation.2);
+    assert!(explanation.1.contains("when tries=2 <= 2 -> enabled"));
+    assert!(explanation.1.contains("enabled: 1"));
+
+    let map = run(&["reachable", as_text(&machine), "--depth", "4"]);
+    assert_eq!(map.0, 0, "stderr: {}", map.2);
+    assert!(map.1.starts_with("# sextant-reachable v1\n"));
+    assert!(map.1.contains("state=idle env={} path=-"));
+}
+
+#[test]
 fn usage_errors_exit_two() {
     let missing = run(&["check"]);
     assert_eq!(missing.0, 2);

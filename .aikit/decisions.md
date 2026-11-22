@@ -74,3 +74,10 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Context**: Dead-end detection is useful but v0.8 slices always end in a state, which check wrongly treats as a modeling mistake and which makes replay refuse a valid slice.
 - **Decision**: Add a terminal state declaration; verify skips the dead-end finding only for declared terminals, slice marks the script final state as terminal, and canonical rendering plus structural diff include terminals.
 - **Consequences**: Modelers state intent explicitly while dead-end detection keeps its power for undeclared sinks, and sliced machines replay through the CLI without a bypass flag.
+
+### ADR-010: ADR-010: Guard diagnostics and reachable-state map
+- **Date**: 2026-11-22
+- **Status**: Accepted
+- **Context**: When an event is stuck, replay only says that no transition fired; a modeler needs to see which guards failed and with what values. Exploration also needs a human-readable map of reachable configurations.
+- **Decision**: Add explain, which replays a prefix script and evaluates every candidate guard for the next event with actual environment values, and reachable, which lists deduplicated reachable configurations with shortest paths. Both are pure functions using the existing transition selector.
+- **Consequences**: Two new core modules and CLI commands; no dependencies. Outputs are versioned and deterministic, and explain never mutates the model or the environment.
