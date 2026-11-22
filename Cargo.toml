@@ -1,0 +1,18 @@
+[package]
+name = "sextant"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+description = "Deterministic finite-state-machine verification, replay and golden-trace regression."
+license = "LicenseRef-AL-1.1"
+publish = false
+
+[dependencies]
+
+[lib]
+name = "sextant"
+path = "src/lib.rs"
+
+[[bin]]
+name = "sextant"
+path = "src/main.rs"

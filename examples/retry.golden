@@ -1,0 +1,8 @@
+# sextant-trace v1
+machine: retry
+initial: {}
+step 001: START | idle {} -> waiting {}
+step 002: TICK | waiting {} -> waiting {tries=1}
+step 003: TICK | waiting {tries=1} -> waiting {tries=2}
+step 004: OK | waiting {tries=2} -> done {tries=2}
+final: done {tries=2}

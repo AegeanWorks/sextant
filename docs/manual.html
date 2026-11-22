@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sextant field manual</title>
+<style>
+body { font: 15px/1.5 ui-monospace, Consolas, monospace; max-width: 52rem; margin: 2rem auto; padding: 0 1rem; color: #16222c; }
+h1, h2 { color: #0b4f6c; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccd7dd; padding: .35rem .5rem; text-align: left; vertical-align: top; }
+code { background: #eef3f6; padding: .1rem .25rem; }
+pre { background: #eef3f6; padding: .75rem; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>Sextant field manual</h1>
+<p>A local reference for the model language and CLI. Open this file directly; it has no
+scripts, no external resources and no network calls.</p>
+
+<h2>Commands</h2>
+<table>
+<tr><th>Command</th><th>Purpose</th></tr>
+<tr><td><code>check &lt;machine&gt;</code></td><td>Structural verification of states, events, guards and reachability.</td></tr>
+<tr><td><code>replay &lt;machine&gt; &lt;events&gt;</code></td><td>Deterministic trace of every transition.</td></tr>
+<tr><td><code>golden &lt;machine&gt; &lt;events&gt; &lt;file&gt;</code></td><td>Compare a trace with a committed golden file.</td></tr>
+<tr><td><code>explore &lt;machine&gt;</code></td><td>Bounded enumeration of reachable configurations.</td></tr>
+<tr><td><code>generate &lt;machine&gt; --seed N</code></td><td>Reproducible event script from a pure PRNG.</td></tr>
+</table>
+
+<h2>Machine statements</h2>
+<table>
+<tr><th>Form</th><th>Meaning</th></tr>
+<tr><td><code>machine name</code></td><td>Names the model.</td></tr>
+<tr><td><code>initial state</code></td><td>Sets the start state.</td></tr>
+<tr><td><code>state name</code></td><td>Declares a state.</td></tr>
+<tr><td><code>event name</code></td><td>Declares an event.</td></tr>
+<tr><td><code>transition from event [when cond] [do effects] -&gt; to</code></td><td>Defines one edge.</td></tr>
+<tr><td><code>invariant name: cond</code></td><td>A condition that must always hold.</td></tr>
+</table>
+
+<h2>Example</h2>
+<pre>machine retry
+initial idle
+state idle
+state waiting
+state done
+event START
+event TICK
+event OK
+event RESET
+transition idle START -&gt; waiting
+transition waiting TICK when tries &lt;= 2 do tries += 1 -&gt; waiting
+transition waiting OK -&gt; done
+transition done RESET do tries = 0 -&gt; idle
+invariant tries_bound: tries &lt;= 3</pre>
+
+<p>Exit codes: zero for success, one for a verification failure, two for a usage error.
+Data commands write only data to standard output; human status goes to standard error.</p>
+</body>
+</html>

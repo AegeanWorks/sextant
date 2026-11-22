@@ -9,3 +9,4 @@ Persisted state carries a format version. A loader refuses a version it does not
 without modifying or quarantining that file; older versions migrate when a migration exists.
 
 ## Rules
+- **G-001** (user): Functional Core, Imperative Shell, I/O at the Edges and Explicit State Machines are hard architectural constraints, not style: src/core is pure and contains no filesystem, stdout, clock, process or network access; only src/shell performs I/O at process edges; both the user-modelled finite state machine and the CLI session lifecycle are explicit enum state machines with enumerated transitions.

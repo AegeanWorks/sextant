@@ -1,0 +1,82 @@
+# Sextant architecture
+
+## The three constraints
+
+The user's Architectural Engineering Directive is recorded as project guideline G-001 and
+treated as a constraint on every source file, not as a style preference.
+
+### 1. Functional Core, Imperative Shell
+
+`src/core/` contains only data and total functions:
+
+- `model.rs` — `State`, `Event`, `Condition`, `Effect`, `Transition`, `Machine`, `Env`,
+  `Trace`. All types are `Clone + Debug + PartialEq + Eq`; keys use `BTreeMap`/`BTreeSet`
+  for deterministic ordering.
+- `parse.rs` — `parse_machine` and `parse_events` turn text into data or a structured
+  `Error` carrying a line number.
+- `engine.rs` — `choose_transition`, `replay`, `verify`, `explore`, `generate_events`,
+  `Rng`. No function reads a file, a clock, an environment variable or ambient state.
+- `format.rs` — `render_trace`, `render_findings`, `diff_traces`. Pure string transforms.
+- `error.rs` — `Error` and `Finding` with pure message formatting.
+
+`src/shell/` is the imperative shell: `cli.rs` parses arguments, `run.rs` sequences
+operations and drives the session state machine, `io.rs` performs the actual I/O, and
+`main.rs` maps results to process exit codes.
+
+### 2. I/O at the Edges
+
+The boundary is explicit and tiny:
+
+- `src/shell/io.rs` is the only module that imports `std::fs` or calls `write_all`.
+- `src/main.rs` reads `std::env::args` once at the process edge.
+- Data-producing commands write only data to stdout; status goes to stderr
+  (`finish_quiet`), so `sextant generate ... > events.sex` produces exactly the script.
+- `write_text` flushes and fsyncs generated files before returning.
+
+`tests/architecture.rs::io_is_confined_to_the_edge_module` enforces this by scanning
+source, and `functional_core_has_no_io_or_ambient_state` rejects `std::fs`, `std::io`,
+`std::env`, `std::process`, `std::time`, `std::net`, `println!`, `eprintln!` and
+`Command::new` anywhere under `src/core/`.
+
+### 3. Explicit State Machines
+
+There are two, both real and both inspectable:
+
+**User model.** A `Machine` is states + events + transitions + invariants. The single
+transition selector `choose_transition(machine, state, env, event)` filters by state and
+event, evaluates guards, rejects simultaneous guards as ambiguous, applies effects to a
+clone of the environment, and returns the chosen edge. Replay and exploration call this
+one function; there is no second, divergent notion of a step. Guards use a total
+environment (unbound variable = 0), and effects use saturating arithmetic.
+
+**CLI lifecycle.** `SessionState` is `Idle → Loaded → Verified → Replayed → Compared →
+Complete`, with `Failed` and `Reset`. The complete transition table is a `const`
+slice of 14 edges in `src/shell/session.rs`. Every command drives it through one helper;
+illegal transitions are errors, not no-ops. The test enumerates all 7×7 state/event pairs
+and asserts the transition function agrees with the table exactly, and that no pair has
+two destinations.
+
+## Why this shape
+
+- **Determinism is a contract.** Golden files are only useful if a trace is identical on
+  every run and machine. Sorted maps, ordered transitions, no clock and a pure PRNG make
+  that true by construction.
+- **Verification is separable.** Static structure (`verify`), bounded dynamics
+  (`explore`) and a concrete run (`replay`) are three different questions. Keeping them
+  as separate pure functions lets the shell choose which one a command needs.
+- **The edge can stay dumb.** Because core results are data, the shell only reads text,
+  calls a pure function and writes text. There is no business logic in `io.rs`.
+
+## Boundaries and limitations (v0.1)
+
+- The environment holds integers only; no strings, lists or floats.
+- `verify` ignores guards for reachability. This over-approximates reachability, so an
+  "unreachable" finding is sound, but a state reported reachable may still be infeasible
+  under its guards.
+- `explore` bound is 200,000 configurations; hitting it sets `truncated` rather than
+  claiming completeness.
+- Effects use saturating arithmetic to avoid silent wraparound; this is a deliberate
+  semantic choice, not an error condition.
+- No third-party crates. The only build prerequisite is a Rust toolchain with a working
+  linker. On this Windows host the project follows `projects/keystone/.cargo/config.toml`
+  and selects `x86_64-pc-windows-gnu`.

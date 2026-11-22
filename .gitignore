@@ -8,3 +8,6 @@
 __pycache__/
 *.py[cod]
 node_modules/
+
+# Rust build output
+/target/

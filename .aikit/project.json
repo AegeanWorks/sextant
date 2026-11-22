@@ -23,5 +23,10 @@
   "python_min": null,
   "scratch_paths": [],
   "gate_outputs": [],
-  "created": "2026-11-22"
+  "created": "2026-11-22",
+  "has_ui": false,
+  "ui_kind": "library",
+  "ui_evidence": [],
+  "ui_checked_at": "2026-11-22",
+  "ui_source": "detected"
 }

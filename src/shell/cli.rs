@@ -1,0 +1,217 @@
+//! Hand-rolled argument parsing: no external crates, deterministic errors.
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Command {
+    Help,
+    Version,
+    Inventory,
+    Check { machine: String },
+    Replay { machine: String, events: String, out: Option<String> },
+    Golden { machine: String, events: String, golden: String, update: bool },
+    Explore { machine: String, depth: usize },
+    Generate { machine: String, seed: u64, count: usize, out: Option<String> },
+    Demo { seed: u64 },
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct CliError {
+    pub message: String,
+}
+
+pub fn usage_text() -> String {
+    [
+        "sextant 0.1.0 - deterministic finite-state-machine tooling",
+        "",
+        "USAGE",
+        "  sextant check <machine.sex>",
+        "  sextant replay <machine.sex> <events.sex> [--out <trace.txt>]",
+        "  sextant golden <machine.sex> <events.sex> <golden.txt> [--update]",
+        "  sextant explore <machine.sex> [--depth N]",
+        "  sextant generate <machine.sex> --seed N [--count M] [--out <events.sex>]",
+        "  sextant demo --scripted [--seed N]",
+        "  sextant inventory",
+        "  sextant --help | --version",
+        "",
+        "EXIT CODES",
+        "  0  success        1  verification or behaviour failure        2  usage error",
+    ]
+    .join("\n")
+}
+
+fn split(
+    args: &[String],
+    value_flags: &[&str],
+    switch_flags: &[&str],
+) -> Result<(Vec<String>, Vec<(String, String)>, Vec<String>), CliError> {
+    let mut positional = Vec::new();
+    let mut values = Vec::new();
+    let mut switches = Vec::new();
+    let mut index = 1usize;
+    while index < args.len() {
+        let token = &args[index];
+        if value_flags.contains(&token.as_str()) {
+            if index + 1 >= args.len() {
+                return Err(CliError {
+                    message: format!("{} needs a value", token),
+                });
+            }
+            values.push((token.clone(), args[index + 1].clone()));
+            index += 2;
+        } else if switch_flags.contains(&token.as_str()) {
+            switches.push(token.clone());
+            index += 1;
+        } else if token.starts_with('-') {
+            return Err(CliError {
+                message: format!("unknown option '{}'", token),
+            });
+        } else {
+            positional.push(token.clone());
+            index += 1;
+        }
+    }
+    Ok((positional, values, switches))
+}
+
+fn exactly_one(positional: &[String], label: &str) -> Result<String, CliError> {
+    if positional.len() != 1 {
+        return Err(CliError {
+            message: format!("expected exactly one {} argument", label),
+        });
+    }
+    Ok(positional[0].clone())
+}
+
+fn flag_value<'a>(
+    values: &'a [(String, String)],
+    flag: &str,
+) -> Result<Option<&'a str>, CliError> {
+    let mut found = None;
+    for (name, value) in values {
+        if name == flag {
+            if found.is_some() {
+                return Err(CliError {
+                    message: format!("{} may be given only once", flag),
+                });
+            }
+            found = Some(value.as_str());
+        }
+    }
+    Ok(found)
+}
+
+fn usize_value(values: &[(String, String)], flag: &str, default: usize) -> Result<usize, CliError> {
+    match flag_value(values, flag)? {
+        None => Ok(default),
+        Some(raw) => raw.parse::<usize>().map_err(|_| CliError {
+            message: format!("{} must be a non-negative integer, got '{}'", flag, raw),
+        }),
+    }
+}
+
+fn u64_required(values: &[(String, String)], flag: &str) -> Result<u64, CliError> {
+    match flag_value(values, flag)? {
+        None => Err(CliError {
+            message: format!("{} is required", flag),
+        }),
+        Some(raw) => raw.parse::<u64>().map_err(|_| CliError {
+            message: format!("{} must be a non-negative integer, got '{}'", flag, raw),
+        }),
+    }
+}
+
+fn u64_optional(values: &[(String, String)], flag: &str, default: u64) -> Result<u64, CliError> {
+    match flag_value(values, flag)? {
+        None => Ok(default),
+        Some(raw) => raw.parse::<u64>().map_err(|_| CliError {
+            message: format!("{} must be a non-negative integer, got '{}'", flag, raw),
+        }),
+    }
+}
+
+pub fn parse_args(args: &[String]) -> Result<Command, CliError> {
+    if args.is_empty() {
+        return Ok(Command::Help);
+    }
+    match args[0].as_str() {
+        "--help" | "-h" | "help" => Ok(Command::Help),
+        "--version" | "-V" => Ok(Command::Version),
+        "inventory" => {
+            let (positional, _, _) = split(args, &[], &[])?;
+            if !positional.is_empty() {
+                return Err(CliError {
+                    message: "inventory takes no arguments".to_string(),
+                });
+            }
+            Ok(Command::Inventory)
+        }
+        "check" => {
+            let (positional, _, _) = split(args, &[], &[])?;
+            Ok(Command::Check {
+                machine: exactly_one(&positional, "machine")?,
+            })
+        }
+        "replay" => {
+            let (positional, values, _) = split(args, &["--out"], &[])?;
+            if positional.len() != 2 {
+                return Err(CliError {
+                    message: "replay needs a machine file and an event script".to_string(),
+                });
+            }
+            Ok(Command::Replay {
+                machine: positional[0].clone(),
+                events: positional[1].clone(),
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
+        "golden" => {
+            let (positional, _, switches) = split(args, &[], &["--update"])?;
+            if positional.len() != 3 {
+                return Err(CliError {
+                    message: "golden needs a machine file, an event script and a golden file".to_string(),
+                });
+            }
+            let update = switches.iter().any(|flag| flag == "--update");
+            Ok(Command::Golden {
+                machine: positional[0].clone(),
+                events: positional[1].clone(),
+                golden: positional[2].clone(),
+                update,
+            })
+        }
+        "explore" => {
+            let (positional, values, _) = split(args, &["--depth"], &[])?;
+            Ok(Command::Explore {
+                machine: exactly_one(&positional, "machine")?,
+                depth: usize_value(&values, "--depth", 8)?,
+            })
+        }
+        "generate" => {
+            let (positional, values, _) = split(args, &["--seed", "--count", "--out"], &[])?;
+            Ok(Command::Generate {
+                machine: exactly_one(&positional, "machine")?,
+                seed: u64_required(&values, "--seed")?,
+                count: usize_value(&values, "--count", 20)?,
+                out: flag_value(&values, "--out")?.map(str::to_string),
+            })
+        }
+        "demo" => {
+            let (positional, values, switches) = split(args, &["--seed"], &["--scripted"])?;
+            if !positional.is_empty() {
+                return Err(CliError {
+                    message: "demo takes no positional arguments".to_string(),
+                });
+            }
+            if !switches.iter().any(|flag| flag == "--scripted") {
+                return Err(CliError {
+                    message: "demo requires --scripted".to_string(),
+                });
+            }
+            Ok(Command::Demo {
+                seed: u64_optional(&values, "--seed", 0)?,
+            })
+        }
+        other => Err(CliError {
+            message: format!("unknown command '{}'", other),
+        }),
+    }
+}

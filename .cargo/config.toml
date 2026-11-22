@@ -1,0 +1,5 @@
+[build]
+# The MSVC linker (link.exe) is not installed on this host. The GNU target uses
+# the available mingw-w64 gcc and matches the pattern already used by
+# projects/keystone/.cargo/config.toml and rust/README.md.
+target = "x86_64-pc-windows-gnu"
