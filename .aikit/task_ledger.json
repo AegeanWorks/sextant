@@ -1,13 +1,13 @@
 {
   "version": 1,
   "active_task": {
-    "task_id": "sextant-v010-diagnostics",
+    "task_id": "sextant-v010-doc-fix",
     "last_phase": "phase 4",
     "active_phase": 5,
     "status": "completed",
-    "updated_at": 1795332547.4133706,
+    "updated_at": 1795332844.5316265,
     "owner": "opencode:sextant",
-    "lease_until": 1795339747.4133706,
+    "lease_until": 1795340044.5316265,
     "started_by": "opencode:sextant",
     "continuations": [],
     "workspaces": [
@@ -16,46 +16,12 @@
         "path": "projects/sextant"
       }
     ],
-    "completed_at": 1795332547.9150782,
-    "completed_head": "62380449d84f4a8c4785362f446c111b90385c94",
-    "completed_tree": "9677ff17f779d99880496f2ed15682430fc53cb6"
+    "completed_without_impact_assessment": true,
+    "completed_at": 1795332859.585175,
+    "completed_head": "3ab167d8559d395b6f048167bab61f789d50c779",
+    "completed_tree": "2e6e139530f9fd0de838169185b2aa670c4581b9"
   },
   "checkpoints": [
-    {
-      "task_id": "sextant-v07-fmt-polish",
-      "phase": "phase 4",
-      "phase_num": 4,
-      "description": "Explain fmt --check failures with Why/Fix and stop suggesting --check on a human-formatted example",
-      "files_affected": [],
-      "status": "in_progress",
-      "timestamp": 1795330527.5386963,
-      "timestamp_str": "2026-11-22 09:55:27",
-      "agent": "opencode:sextant",
-      "checklists": "passed",
-      "workspaces": [
-        {
-          "name": "sextant",
-          "path": "projects/sextant"
-        }
-      ]
-    },
-    {
-      "task_id": "sextant-v07-fmt-polish",
-      "phase": "completed",
-      "phase_num": 5,
-      "description": "Task 'sextant-v07-fmt-polish' completed successfully.",
-      "status": "completed",
-      "timestamp": 1795330528.0513303,
-      "timestamp_str": "2026-11-22 09:55:28",
-      "agent": "opencode:sextant",
-      "head": "75de02c4ba83e98c9e3ef810e5ace53333c92886",
-      "delivery": {
-        "roots": [
-          "."
-        ],
-        "forced": false
-      }
-    },
     {
       "task_id": "sextant-v08-slice",
       "phase": "phase 2",
@@ -379,6 +345,41 @@
       "timestamp_str": "2026-11-22 10:29:07",
       "agent": "opencode:sextant",
       "head": "62380449d84f4a8c4785362f446c111b90385c94",
+      "delivery": {
+        "roots": [
+          "."
+        ],
+        "forced": false
+      }
+    },
+    {
+      "task_id": "sextant-v010-doc-fix",
+      "phase": "phase 4",
+      "phase_num": 4,
+      "description": "Use a prefix that ends in the waiting state so the explain Quick Reference shows an enabled guard",
+      "files_affected": [],
+      "status": "in_progress",
+      "timestamp": 1795332844.5316265,
+      "timestamp_str": "2026-11-22 10:34:04",
+      "agent": "opencode:sextant",
+      "checklists": "passed",
+      "workspaces": [
+        {
+          "name": "sextant",
+          "path": "projects/sextant"
+        }
+      ]
+    },
+    {
+      "task_id": "sextant-v010-doc-fix",
+      "phase": "completed",
+      "phase_num": 5,
+      "description": "Task 'sextant-v010-doc-fix' completed successfully.",
+      "status": "completed",
+      "timestamp": 1795332859.7088027,
+      "timestamp_str": "2026-11-22 10:34:19",
+      "agent": "opencode:sextant",
+      "head": "3ab167d8559d395b6f048167bab61f789d50c779",
       "delivery": {
         "roots": [
           "."
