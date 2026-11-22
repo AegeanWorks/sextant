@@ -7,6 +7,8 @@
 
 > **Deterministic finite-state-machine verification, replay and golden-trace regression for event-driven code** — with zero dependencies and plain-text traces you can review in a diff.
 
+> **Archived**: Sextant was an AIKit testbed; retired after its verification role ended. (archived 2026-11-22). This project is read-only; its GitHub repository is archived.
+
 ---
 
 ## ⚡ 30-Second Cold-Start Quick Reference

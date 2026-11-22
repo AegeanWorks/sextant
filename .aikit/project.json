@@ -30,5 +30,11 @@
     "docs/manual.html"
   ],
   "ui_checked_at": "2026-11-22",
-  "ui_source": "manual"
+  "ui_source": "manual",
+  "archived": true,
+  "archived_at": "2026-11-22",
+  "archive_reason": "Sextant was an AIKit testbed; retired after its verification role ended.",
+  "archive_repo": "AegeanWorks/Sextant",
+  "archive_description": "[ARCHIVED] Deterministic finite-state-machine verification, replay and golden-trace regression for event-driven code \u2014 with zero dependencies and plain-text traces you can review in a diff.",
+  "archive_origin": "projects/sextant"
 }
