@@ -37,7 +37,7 @@ contract, a dependency, a data format or the architecture; IDs are consecutive a
 - **Date**: 2026-11-22
 - **Status**: Accepted
 - **Context**: Bounded exploration enumerates structured sequences, but a programmer also wants random-looking reproducible scripts that mimic real usage, and check currently misses the common mistake of a broad transition declared before a narrower one on the same event.
-- **Decision**: Add a pure uzz core that replays generated scripts over a seed range and reports deterministic failures, and extend erify with a shadowed-transition finding based on interval dominance for guarded transitions on the same (state, event).
+- **Decision**: Add a pure fuzz core that replays generated scripts over a seed range and reports deterministic failures, and extend verify with a shadowed-transition finding based on interval dominance for guarded transitions on the same (state, event).
 - **Consequences**: A new core module and test module; one new Finding variant; a new CLI command with versioned output. Dominance is deliberately limited to one-variable comparisons with literal bounds, so it is conservative and never claims shadowing for non-interval guards.
 
 ### ADR-005: ADR-005: Deterministic JSON output for CI
